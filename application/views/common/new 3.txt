@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <style>
+
+  li{
+                list-style-type:none;
+              
+  }
+  .scrollbar{
+              border:2px solid #33DDFF;
+              height:220px;
+              }
+a, a:hover{
+              text-transform:uppercase;
+              text-decoration:none;
+              cursor:pointer;
+
+}
+li:hover {
+    background: #d1d1d1 !important;
+}
+
+
+
+.scrollbar
+{
+              
+              float: right;
+              height:215px;
+              overflow-y: scroll;
+              margin-bottom: 25px;
+              width: 260px;
+}
+
+.force-overflow
+{
+              min-height:300px;
+}
+
+#wrapper
+{
+              text-align: center;
+              width: 500px;
+              margin: auto;
+}
+
+
+
+#style::-webkit-scrollbar-track
+{
+              -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+              background-color: #F5F5F5;
+              border-radius: 10px;
+              border:1px solid #fff;
+}
+
+#style::-webkit-scrollbar
+{
+              width: 10px;
+              background-color: #F5F5F5;
+}
+
+#style::-webkit-scrollbar-thumb
+{
+              background-color: #33BEFF  ;
+              border-radius: 10px;
+              border:1px solid #fff;     
+              
+}
+#myInput {
+  background-image: url('/css/searchicon.png');
+  background-position: 10px 12px;
+  background-repeat: no-repeat;
+  width: 100%;
+  font-size: 16px;
+  padding: 12px 20px 12px 40px;
+  border: 1px solid #ddd;
+  margin-bottom: 12px;
+}
+
+#myUL, .myUL2{
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+#myUL li a, .myUL2 li a {
+margin-top: -1px;
+    padding: 7px;
+    text-decoration: none;
+    font-size: 14px;
+    color: black;
+    display: block;
+}
+
+
+#myUL li a:hover:not(.header) {
+
+}
+#myUL li a:focus, #myUL li a:active,.myUL2 li a:focus, .myUL2 li a:active {color:#fff !important;}
+
+#myUL li a:hover, .myUL2 li a:hover{color:#000 !important;}
+  </style>
+  <script>
+  $(document).ready(function(){
+    $(".lists").click(function(){
+        if ($(this).hasClass("selected")){
+          $(this).removeClass("selected");
+                               console.log("this happensss");
+        }
+        else{
+          $(this).addClass("selected");
+        }
+    });
+  });
+  </script>
+  
+</head>
+<body>
+<div class="container">
+              <div class="row">
+              <div class="col-md-3">
+<h4>Search a category</h4>
+<input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for category" title="Type in a name">
+                                                          <div class="scrollbar" id="style">
+                                                            <div class="force-overflow">
+                                                            
+                                                           <ul class="list-group" id="myUL">
+                                                                        <li><a class="lists" href="" data-related="personal_grooming">Personal grooming</a></li>
+                                                                        <li><a class="lists" href="" data-related="beauty">Beauty</a></li>
+                                                                        <li><a class="lists" href="" data-related="hair_care">Hair care</a></li>
+                                                                        <li><a class="lists" href="" data-related="oral_care">Oral care</a></li>
+                                                                           <li><a class="lists" href="" data-related="home_care">Home care</a></li></div>
+                                                                                                        
+                             </ul>
+                                                          </div>
+                                           
+              
+              </div>
+              <div class="col-md-3">
+              <h4>Search a brand</h4>
+                                                          <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for brand.." title="Type in a name">
+                             <div id="personal_grooming" class="data-section">
+                             <div class="scrollbar" id="style" >
+                                                            <div class="force-overflow">
+                                                            <ul class="list-group myUL2" >
+                                                                        <li><a href="" data-related="braun">braun</a></li>
+                                                          <li><a href="" data-related="gillette">gillette</a></li></div>
+                                                                                                        
+                             </ul>
+                             
+                             </div>
+              </div>
+</div>
+              <div class="col-md-3">
+              <h4>Search for URL</h4>
+                                                          <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for url.." title="Type in a name">
+                             <div id="braun" class="data-section lists">
+                             <div class="scrollbar" id="style">
+                                                            <div class="force-overflow">
+                                                            <ul class="list-group myUL2">
+                                                                        <li><a href="" data-related="personal_grooming">gillette</a></li>
+                                                                        <li><a href="" data-related="beauty">gillette</a></li>
+                                                                        <li><a href="" data-related="hair_care">gillette</a></li>
+                                                                        <li><a href="" data-related="oral_care">gillette</a></li>
+                                                                           <li><a href="" data-related="home_care">gillette</a></li></div>
+                                                                                                        
+                             </ul>
+                                                          </div>
+
+                             </div>
+              </div>
+
+
+</body>
+<script>
+$(document).ready(function () {
+          if (!$.browser.webkit) {
+              $('.wrapper').html('<p>Sorry! Non webkit users. :(</p>');
+          }
+});
+$(".data-section").each(function(){
+     $(this).hide();
+    if($(this).attr('id') == 'main') {
+        $(this).show();
+    }
+});
+$('li').click(function(){
+   $(this).css('background-color',"#337ab7")
+    $(this).css('border-bottom',"5px solid #fff")
+              $(this).find('a').css('color',"#fff")
+
+})
+
+$('a').on( "click", function(e) {
+    e.preventDefault();
+    var id = $(this).attr('data-related'); 
+    $(".data-section").each(function(){
+       
+        if($(this).attr('id') == id) {
+      $(this).toggle();
+                             
+        }
+              
+
+    });
+
+});
+function myFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("a")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+
+
+</script>
+</html>

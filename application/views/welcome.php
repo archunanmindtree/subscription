@@ -1,41 +1,67 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
+  <?php // Main body ?>
+  
+<div class="container mycontainer">
+   <div class="row">
+	 <div class="col-md-3 col-offset-sm-1" style="margin-left:12.33%">
+	 <a href="<?php echo base_url();?>subscription/category">
+		  <div class="panel panel-default catalog subscribebycategory">
+			<div class="panel-body box-size">
+				<div class="icon">
+					<img src="<?php echo base_url();?>public/assets/images/website.png"  width=120 height=122></img>
+				</div>
+				<div class="icon-description">
+				<a href="<?php echo base_url();?>subscription/category">Subscribe By Category</a>
+				</div>
+		  </div>
+	 </div> 
+	</a>
+	</div>	 
+	 <div class="col-md-3 col-xs-6 ">
+	 <a href="<?php echo base_url();?>subscription/solution">
+		  <div class="panel panel-default catalog subscribebysolution">
+			<div class="panel-body box-size">
+				<div class="icon"> 
+					<img src="<?php echo base_url();?>public/assets/images/04.svg" width=120 height=122></img>
+				</div>
+				<div class="icon-description">
+				<a href="<?php echo base_url();?>subscription/solution">Subscribe By Solution</a>
+				</div>
+			</div>
+		  </div>
+		  </a>
+	  </div>
+	  
+	   <div class="col-md-3 col-xs-6 ">
+	   <a href="<?php echo base_url();?>subscription/index">
+		  <div class="panel panel-default catalog mysubscription">
+			<div class="panel-body box-size">
+				<div class="icon">
+					<img src="<?php echo base_url();?>public/assets/images/03.svg" width=120 height=122></img>
+				</div>
+				<div class="icon-description ">
+				<a href="<?php echo base_url();?>subscription/index">My Subscriptions</a>
+				</div>
+			</div>
+		  </div>
+		 </a>
+	  </div>	  
+	  
+	 </div>
 
-<?php // display welcome message from admin settings ?>
-<?php echo $welcome_message; ?>
+ <!-- <div class="row">	  
+	 <div class="col-sm-4">
+		  <div class="panel panel-default catalog">
+			<div class="panel-body">
+				<div class="icon">
+					<i class="fa fa-suitcase fa-5x" aria-hidden="true"></i> 
+				</div>
+				<div class="icon-description">
+				<a href="<?php echo base_url();?>subscription/index">My Subscription</a>
+				</div>
+			</div>
+		  </div>
+	  </div>-->	  
+	  
+	
 
-<div class="clearfix"></div>
-<hr />
-
-<p><?php echo lang('welcome content view_location'); ?></p>
-<code>application/views/welcome.php</code>
-
-<div class="clearfix"><br /></div>
-
-<p><?php echo lang('welcome content controller_location'); ?></p>
-<code>application/controllers/Welcome.php</code>
-
-<div class="clearfix"><hr /></div>
-
-<p><?php echo lang('welcome content ci_docs'); ?></p>
-
-<div class="clearfix"><hr /></div>
-
-<p><a href="<?php echo base_url('api/users'); ?>"><?php echo lang('welcome content click_here'); ?></a>: <?php echo lang('welcome content sample_api'); ?></p>
-
-<div class="clearfix"><hr /></div>
-
-<p><a href="<?php echo base_url('profile'); ?>"><?php echo lang('welcome content click_here'); ?></a>: <?php echo lang('welcome content sample_profile'); ?></p>
-<p>
-    <?php echo lang('welcome content username'); ?>: <strong>johndoe</strong><br />
-    <?php echo lang('welcome content or_email'); ?>: <strong>john@doe.com</strong><br />
-    <?php echo lang('welcome content password'); ?>: <strong>johndoe</strong>
-</p>
-
-<div class="clearfix"><hr /></div>
-
-<p><a href="<?php echo base_url('admin'); ?>"><?php echo lang('welcome content click_here'); ?></a>: <?php echo lang('welcome content sample_admin'); ?></p>
-<p>
-    <?php echo lang('welcome content username'); ?>: <strong>admin</strong><br />
-    <?php echo lang('welcome content or_email'); ?>: <strong>admin@admin.com</strong><br />
-    <?php echo lang('welcome content password'); ?>: <strong>admin</strong>
-</p>
+</div>
