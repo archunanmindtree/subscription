@@ -24,7 +24,6 @@ $(document).ready(function() {
 		}
 	});
 	
-	
 	$('li').click(function(){
 	$(this).css('background-color',"#337ab7")
 	$(this).css('border-bottom',"5px solid #fff")
@@ -37,11 +36,12 @@ $(document).ready(function() {
 		$(this).find('a').css('color',"#000")
 		
 	});
-	/*$(".bt_save").hide(); 
-	$("#email_address").blur(function(){
-		$(".bt_save").show(); 	
-	});*/
-	
+	 
+	$('#category-submit').on('hidden.bs.modal', function (e) {
+		  site_name =[]; brand_name=[];$("#site_selected").html(''); $("#brand_selected").html('');
+		  $('#category_selected').html('');
+                    
+     });
 	
    //$(".brandclass").hide();
    //$(".siteclass").hide(); 	 
@@ -56,10 +56,14 @@ $(document).ready(function() {
 			 }else {
                alert("Please choose any one from the list to proceed");				 
 			 }	 
-		  
-			 $('#category_selected').text(cat_names);
+		      
+		      $listSelector = $("#category_selected") //Your list element
+			 $.each(cat_names, function(i, obj) {
+			  $listSelector.append("<li><span>"+obj+"</span></li>")
+			 });
+			// $('#category_selected').text(cat_names);
 			 
-			 var tmp_bname = []; var temp_id = brand_names;
+			 var tmp_bname = []; var temp_id = brand_names;brand_name=[];site_name=[];
 			   console.log('null:'+brand_names.length);
 			  //console.log('null:'+temp_id);
 		      $.each(cat_ids, function (id, val) {
@@ -83,7 +87,7 @@ $(document).ready(function() {
 		    //console.log(cat_relid);
 			
 			 var brand_name =  array_unique(tmp_bname);
-					
+			 //console.log(brand_name); 
 			 $listSelector = $("#brand_selected") //Your list element
 			 $.each(brand_name, function(i, obj) {
 			  $listSelector.append("<li><span>"+obj+"</span></li>")
@@ -110,7 +114,7 @@ $(document).ready(function() {
 			  }); 
 			  
 	      	var site_name =  array_unique(tmp_sitename);
-
+       
 			$listSelector = $("#site_selected") //Your list element
 			$.each(site_name, function(i, obj) {
 			$listSelector.append("<li><span>"+obj+"</span></li>")
@@ -129,7 +133,7 @@ $(document).ready(function() {
 			 $.ajax({
 						url :base_url+"/subscription/submit", 
 						type: "POST",
-						data:  { category: cat_ids,
+						data:  {  category: cat_ids,
 								  brand: brand_ids,
 								  site:site_ids,
 								  solution:sol_ids,
@@ -160,7 +164,7 @@ $(document).ready(function() {
 		  	
  			submitHandler: function(form) {
 			//form.submit();
-		    $('#confirm-submit').modal('show');
+		    $('#category-submit').modal('show');
 			
 			 var options = jQuery("#usercategory option:selected");
 			
@@ -244,6 +248,7 @@ $(document).ready(function() {
 				url: base_url+"/subscription/list_import",
 			    success: function(res)	{
 						console.log(res); 
+						$('#upload_modal').modal('hide'); 
 						// alert(res);return false;
 					  //window.location.href  = base_url+'/subscription/admin'; 
 					  location.reload();// for reload a page
@@ -266,47 +271,36 @@ $(document).ready(function() {
 		return result;
  }	 
  
- 
  function export_excel() {
 
        var submit_val = $('#export').val();
 		if(cat_ids.length <=0 && brand_ids.length <= 0 && site_ids.length <= 0 ) {
 		  alert("Please choose any one from the list");		
 		 }
-		else {
-			var category = $("<input>")
-               .attr("type", "hidden")
-               .attr("name", "category").val(cat_ids);
-			   var brand = $("<input>")
-               .attr("type", "hidden")
-               .attr("name", "brand").val(brand_ids);
-			     var site = $("<input>")
-               .attr("type", "hidden")
-               .attr("name", "site").val(site_ids);
-               $('#frm_admin').append($(category));
-		       $('#frm_admin').append($(brand));
-			   $('#frm_admin').append($(site));
-			   $("#frm_admin").attr("action", "/subscription/export").submit();
-		/* $.ajax({
-				url :base_url+"/subscription/export", 
-				type: "POST",
-				data:  {  category: cat_ids,
-						  brand: brand_ids,
-						  site:site_ids,
-						  export_id:submit_val,
-					  },
-				success: function(res)	{
-					console.log(res); 
-					 //alert(res);return false;
-					 //window.location.href  = base_url+'/subscription/export'; 
-				  //location.reload();// for reload a page
-				},
-				error: function (jqXHR, textStatus, errorThrown)	{   
-					console.log(errorThrown); 
-					alert('Error adding / update data');
-				}
-			 }); */
-		}
+		else  {
+		 var category = $("<input>")
+		.attr("type", "hidden")
+		.attr("name", "category").val(cat_ids);
+		var brand = $("<input>")
+		.attr("type", "hidden")
+		.attr("name", "brand").val(brand_ids);
+		var site = $("<input>")
+		.attr("type", "hidden")
+		.attr("name", "site").val(site_ids);
+		var solution = $("<input>")
+		.attr("type", "hidden")
+		.attr("name", "solution").val(sol_ids);
+		var communication = $("<input>")
+		.attr("type", "hidden")
+		.attr("name", "communication").val(com_ids);
+		$('#frm_admin').append($(category));
+		$('#frm_admin').append($(brand));
+		$('#frm_admin').append($(site));
+		$('#frm_admin').append($(solution));
+		$('#frm_admin').append($(communication));
+	     $("#frm_admin").attr("action", "/subscription/export").submit();
+		
+       }
  }
   function add_subscription() {
 	   //form.submit();
@@ -390,7 +384,7 @@ $(document).ready(function() {
       $('#upload_modal').modal('show'); // show bootstrap modal
 	   $("#upload_excel").html('');
 	    
-    } 
+   } 
  
  var cat_ids = [];var cat_names =[];
  function multiplecat(id) {

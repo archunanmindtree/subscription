@@ -317,8 +317,7 @@ public function list_import() {
    $import = $this->input->post('import');
 	 //$this->load->helper('url');   
      $email ='';
-	
-   if($import)	{
+     if($import)	{
 			
             $config['upload_path'] = '../public/data/';
 			$config['allowed_types'] = 'xls|xlsx';
@@ -406,17 +405,20 @@ public function list_import() {
   
    /* Excell data import to DB */
 public function export() {
-     $export = $this->input->post('export_id');
+     $export = $this->input->post('export');
      $email ='';$table_name ='';
-    // if($export) {
+     //if($export) {
 	
        // Starting the PHPExcel library
 	   
 	   $categories = explode(',',$this->input->post('category'));
 	   $brands = explode(',',$this->input->post('brand'));
 	   $sites = explode(',',$this->input->post('site')); 
-	  // print_r($categories);  print_r($brands);exit;
-	   $child_brand= array();$child_site= array();
+	   
+	   $solutions = explode(',',$this->input->post('solution'));
+	   $communications = explode(',',$this->input->post('communication')); 
+	   //print_r($categories);  print_r($brands);exit;
+	   $child_brand= array();$child_site = array();
 		   
 		if($categories) {
 		foreach($categories as $key=>$val)	{
@@ -424,22 +426,41 @@ public function export() {
 		 $child_brand[$val] = $this->Subscription_Model->get_child_data('brand', $column,$where);
 		}
 	   }
+	   
+	   if($solutions) {
+		foreach($solutions as $key=>$val)	{
+		 $where_solution[] = $val;
+		}
+	   }
+	   // $com_id =2;
+		$this->db->select('sl.team as solution,cm.type as commu_type,u.email as user');
+		$this->db->from('solution sl');
+		$this->db->join('subscribe_solution ss', '(sl.id=ss.solution_id)');
+		$this->db->join('communication cm', '(ss.commu_type_id =cm.id)');
+		$this->db->join('users u', 'ss.user_id=u.id');
+		$this->db->where_in('solution_id',$where_solution);
+		//$this->db->where('commu_type_id',$com_id);
+		$query = $this->db->get(); 
+		$solutionsdata=array();
+		foreach ($query->result_array() as $row){
+			$solutionsdata[] = $row;
+		} 
+	   // print_r($solutionsdata);exit;
 	  // print_r($child_brand);
-	   $selected_brand = array(); $selected_site = array();
+	   $selected_brand = array();
 	   foreach($child_brand as $key=>$val) {
 			if($brands) {	
 			foreach($brands as $bkey=>$bval) {
 			  if (in_array($bval, $val)) {
 				 unset($child_brand[$key]);
 				 $selected_brand[$key][$bval] = $bval;
-				 //array_push($child_brand,$temp_brand);
+				 //array_push($child_brbrandand,$temp_brand);
 			  }
 			}
 		  }		
 	   }  
 	   //print_r($temp_brand);
-	   //print_r($child_brand);
-	   $final_brand = $child_brand+$selected_brand;
+	   $final_brand = array_replace_recursive($child_brand,$selected_brand);
 	   //print_r($final_brand);
 	   if($final_brand) {
 		foreach($final_brand as $key=>$topval) {
@@ -449,73 +470,86 @@ public function export() {
 			}
 		}
 	   }
-	   // print_r($child_brand);
+	   //print_r($child_site);
+	   $selected_site = array();
 	   foreach($child_site as $key=>$val) {
-			foreach($val as $bkey=>$bval)	{
+			 foreach($val as $bkey=>$bval) {
 			  if($sites) {		
-			  foreach($sites as $ckey=>$cval)	{
-			  if (in_array($cval, $bval)) {
-				 unset($child_site[$key][$bkey]);
-				// $child_site[$key][$bkey][$cval] = $cval;
-				 $selected_site[$key][$bkey][$cval] = $cval;
-				 }
+			  foreach($bval as $ckey=>$cval) {
+			  if (in_array($cval, $sites)) {
+				  unset($child_site[$key][$bkey]);
+				  $selected_site[$key][$bkey][$cval] = $cval;
+			    }				 
 			  }
-			}
-		 }	   
-	   }   
-    
-	 //  print_r($exceldata);		
-        $final_site = $child_site+$selected_site;
-		
+		     }
+		   }	   
+	    } 
+        //print_r($selected_site);
+        //print_r($child_site);		
+        $final_site = array_replace_recursive($selected_site,$child_site); 
 		//print_r($final_site);exit;
 		
-		$this->db->select('uc.category,ub.brand,st.name,u.email');
-        $this->db->from('subscribe_category us');
-        $this->db->join('category uc', '(uc.id = us.entity_id and us.entity_type=\'category\')','left');
-		$this->db->join('brand ub', '(ub.id=us.entity_id and us.entity_type=\'brand\')','left');
-		$this->db->join('site st', '(st.id=us.entity_id and us.entity_type=\'site\')','left');
-		$this->db->join('users u', 'u.id=us.user_id' ,'left');
-		//$this->db->where('us.entity_type', 'site');
-		//$this->db->or_where('us.entity_type', 'category');
-		//$this->db->or_where('us.entity_type', 'brand');
+		$this->db->select('ct.category as category,ub.brand as brand,st.name as site,u.email as user');
+        $this->db->from('category ct');
+		$this->db->join('brand ub', 'ct.id=ub.category');
+		$this->db->join('site st', 'ub.id=st.brand');
+		$this->db->join('subscribe_category sc', '(st.id=sc.entity_id and sc.entity_type=\'site\')');
+		$this->db->join('users u', 'sc.user_id=u.id');
+		
 		$exceldata = array();$where = array();
 		foreach($child_site as $ckey=>$cval) {
-		foreach($cval as $bkey=>$bval) {
-		foreach($bval as $skey=>$sval)	{
+		 foreach($cval as $bkey=>$bval) {
+		  foreach($bval as $skey=>$sval) {
 			  $where[] = $skey;
 			  //$exceldata[] = array('category'=>$ckey,'brand'=>$bkey,'site'=>$skey,'email'=>$sval);
 			 }
+			  // $where[] = $bkey;
 		  }
+		  //$where[] = $ckey;
 		}
 		//print_r($where);
+		
 		$this->db->where_in('entity_id',$where);
 		$query = $this->db->get(); 
-		//echo $this->db->last_query();
+		//echo $this->db->last_query();exit;
+				
 		
-		$exceldata=array();
+		$brandsdata=array();
 		foreach ($query->result_array() as $row){
-		$exceldata[] = $row;
+		    $brandsdata[] = $row;
 		}   
-		//print_r($exceldata);exit;
+		//print_r($brandsdata);exit;
 		$header = array('category','brand', 'site', 'email');
-		
 		
 		$this->excel->setActiveSheetIndex(0);
         //name the worksheet
-		$this->excel->getActiveSheet()->setTitle('subscribed');
+		$this->excel->getActiveSheet()->setTitle('Brands');
 		 
-		$this->excel->getActiveSheet()->setCellValue('A2', 'Brands');
-		$this->excel->getActiveSheet()->setCellValue('B2', 'Brand');
-		$this->excel->getActiveSheet()->setCellValue('C2', 'Sites');
-		$this->excel->getActiveSheet()->setCellValue('D2', 'Email');
+		$this->excel->getActiveSheet()->setCellValue('A1', 'Brand\'s');
+		$this->excel->getActiveSheet()->setCellValue('B1', 'Brands');
+		$this->excel->getActiveSheet()->setCellValue('C1', 'Sites');
+		$this->excel->getActiveSheet()->setCellValue('D1', 'Email');
 		
-	   
 	    //print_r($exceldata);exit;
  
-		$this->excel->getActiveSheet()->fromArray($exceldata, null, 'A3');
-	 
- 
-		$filename='subscribe_list-'.date('d/m/y').'.xls'; //save our workbook as this file name
+		$this->excel->getActiveSheet()->fromArray($brandsdata, null, 'A2');
+		
+		//sheet 2 creation 
+		if($solutionsdata) {
+		$this->excel->createSheet();
+		$this->excel->setActiveSheetIndex(1);
+        //name the worksheet 2
+		$this->excel->getActiveSheet()->setTitle('Solutions');
+		
+		$this->excel->getActiveSheet()->setCellValue('A1', 'Solutions');
+		$this->excel->getActiveSheet()->setCellValue('B1', 'Communications');
+		$this->excel->getActiveSheet()->setCellValue('C1', 'Users');
+			
+		$this->excel->getActiveSheet()->fromArray($solutionsdata, null, 'A2');
+		
+        }
+
+		$filename='subscription_list-'.date('d/m/y').'.xls'; //save our workbook as this file name
 		$status =1; 
 		header('Content-Type: application/vnd.ms-excel'); //mime type
 		header('Content-Disposition: attachment;filename="'.$filename.'"'); //tell browser what's the file name
@@ -529,10 +563,9 @@ public function export() {
 		$status =1; 
  
 		//redirect(base_url().'subscription/index');
-    //} 
- } 
-  
-public function category_import()   {
+     //} 
+ }
+ public function category_import()   {
 	     
 		  
 	      $file_path =  '../public/data/category.xlsx';

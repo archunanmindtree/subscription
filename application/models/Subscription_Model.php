@@ -201,6 +201,19 @@ class Subscription_Model  extends CI_Model {
 	//print_r(	$res);
 	return $res[0];
   }
+   public function get_brand_name($brand=NULL){
+	$this->db->select('brand,ct.category as category');
+	$this->db->from('brand bn');	
+	$this->db->join('category ct', 'bn.category = ct.id'); 
+	$this->db->where('bn.id',$brand);
+	
+    $query  = $this->db->get();
+	if($query->result_array()){
+		$res = $query->result_array();
+	}
+	//print_r(	$res);
+	return $res[0];
+  }
   /* To get get_solutions data used on solution page  */ 
   public function get_solutions($team = null){
 		//$data[''] = 'All Team';
