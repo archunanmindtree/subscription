@@ -3,10 +3,10 @@
     <div class="container-fluid" role="main">
 
         <?php // Main content ?>
-	    <div class="row">
+	    
 		<div class="col-xs-12" >
 		 <form method="post" id="frm_category" class="form-inline">
-     
+         <div class="row">
 	     <div class="form-group col-md-5">
            <label class="control-label dropdownTitle">Solution</label>
 				<div class="category" >
@@ -31,16 +31,18 @@
 					</div>
 				</div>
 			</div>
-         </div>
-		 
+          </div>
+		 </div> 
+		<div class="row">
 	     <div class="form-group" > 
 			<div class="col-md-offset-10" style="width: 577px;padding-top: 10px;padding-bottom: 10px;">
 			  <button type="submit" id="btnSave" class="btn subcriptionBtn" data-toggle="modal" >Subscribe</button>
 			</div>
 		  </div>
+		 </div> 
          </form>
 	  </div>
-	  </div>
+	 
     
     </div>
 </div>

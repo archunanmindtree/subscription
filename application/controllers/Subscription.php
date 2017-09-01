@@ -31,15 +31,31 @@ class Subscription extends CI_Controller {
 	}	
  /* Get URLs from Brand id Output json format */
     public function get_sites() {
-	$brand = explode(",",$this->input->post('brand_id'));
+	$brand = $this->input->post('brand_id');
+	$user_id = $this->input->post('user_id');
     header('Content-Type: application/x-json; charset=utf-8');
+	if($user_id) {	
+	echo(json_encode($this->Subscription_Model->get_user_sites($brand,$user_id)));
+    }else
     echo(json_encode($this->Subscription_Model->get_sites($brand)));
   }
   /* Get Brand from category id Output json format */
    public function get_brands() {
-    $category = explode(",",$this->input->post('category'));
+    $category = $this->input->post('category');
+	$user_id = $this->input->post('user_id');
     header('Content-Type: application/x-json; charset=utf-8');
+	if($user_id) {	
+	echo(json_encode($this->Subscription_Model->get_user_brands($category,$user_id)));
+    }else	
     echo(json_encode($this->Subscription_Model->get_brands($category)));
+  }
+    public function get_communications() {
+    $solution = $this->input->post('solution');
+	$user_id = $this->input->post('user_id');
+    header('Content-Type: application/x-json; charset=utf-8');
+	if($user_id) {	
+	echo(json_encode($this->Subscription_Model->get_user_communications($solution,$user_id)));
+    }
   }
 	 /**
      * subscribe by hirarcy category/brand/site
@@ -58,15 +74,16 @@ class Subscription extends CI_Controller {
 		$this->common_include($title,$bread ); 
 		$user_data = $this->session->all_userdata();
 	    $user_id = (!empty($user_data['id']))?$user_data['id']:1;
+		$data['user_id'] = $user_id;
         $category_list = $this->Subscription_Model->get_user_categories($user_id);
 		$data['categories'] =$category_list;
-		$brand_list = $this->Subscription_Model->get_user_brands($user_id);
+		$brand_list = $this->Subscription_Model->get_user_brands($category=null,$user_id);
 		$data['brands'] =$brand_list;
-		$site_list = $this->Subscription_Model->get_user_sites($user_id);
+		$site_list = $this->Subscription_Model->get_user_sites($brand=null,$user_id);
 		$data['sites'] =$site_list;
 		$solution_list = $this->Subscription_Model->get_user_solutions($user_id);
 		$data['solutions'] =$solution_list;
-		$communication_list = $this->Subscription_Model->get_user_communications($user_id);
+		$communication_list = $this->Subscription_Model->get_user_communications($solution=null,$user_id);
 		$data['communications'] =$communication_list;
 		
 		$this->load->view('subscription/mysubscription', $data);
@@ -148,7 +165,9 @@ class Subscription extends CI_Controller {
 		$data['users'] =$user_list;
 		
 		$team_list = $this->Subscription_Model->get_solutions();
+		
 		$com_list = $this->Subscription_Model->get_communication();
+		
 		$data['solutions'] =$team_list;
 		$data['com_list'] =$com_list;
 		
@@ -174,8 +193,8 @@ class Subscription extends CI_Controller {
 	$user_id =1;
 	$user_data = $this->session->all_userdata();
 	$user_id = (!empty($user_data['id']))?$user_data['id']:	$user_id;
-	
-	if($categories) {
+	if(empty($solutions)) {
+	if($categories ) {
 	foreach($categories as $key=>$val)	{
 	 $column = "id"; $where = "category =$val";
 	 $child_brand[$val] = $this->Subscription_Model->get_child_data('brand', $column,$where);
@@ -183,6 +202,7 @@ class Subscription extends CI_Controller {
    }
    //print_r($child_brand);
    $selected_brand = array(); $selected_site = array();
+   if($child_brand) {
    foreach($child_brand as $key=>$val) {
 	    if($brands) {	
 	    foreach($brands as $bkey=>$bval) {
@@ -193,10 +213,11 @@ class Subscription extends CI_Controller {
 		  }
         }
       }		
-   }  
-   //print_r($temp_brand);
-  // print_r($child_brand);
-   $final_brand = $child_brand+$selected_brand;
+     }  
+   } 
+   //print_r($selected_brand);
+   //print_r($child_brand);
+   $final_brand = $selected_brand+$child_brand;
    //print_r($final_brand);
    if($final_brand) {
 	foreach($final_brand as $key=>$topval) {
@@ -220,13 +241,13 @@ class Subscription extends CI_Controller {
 	    }
      }	   
    }     
-    $final_site = $child_site+$selected_site;
-   // print_r($final_site);	//exit;
+   $final_site = $selected_site+$child_site;
+    //print_r($final_site);	//exit;
 	 
 	$types = array('category','brand', 'site', 'team','communication');
 	$table_category = "subscribe_category"; $column = "entity_id";
 	//Stroing all the values
-	foreach($child_site as $ckey=>$cval) {
+	foreach($final_site as $ckey=>$cval) {
 		foreach($cval as $bkey=>$bval) {
 			foreach($bval as $skey=>$sval)	{
 				$where =  " entity_id= $skey AND entity_type = 'site'  AND user_id = $user_id";
@@ -250,16 +271,22 @@ class Subscription extends CI_Controller {
 		if(empty($data_exist[$column]))
 		$status = $this->Subscription_Model->insert_data($table_category,$data);
 	    if(empty($status))$status = $data_exist[$column];
-   }	   
-
-  $table = "subscribe_solution"; 
-  if($solutions || $communications) {
+     }	   
+   }
+  $table = "subscribe_solution"; $column = "id";
+  if(empty($communications) ) {
+    $communications = $this->Subscription_Model->get_communication_ids();
+  }
+  if($solutions && $communications) {
 	  foreach($solutions as $key=>$val) {
-					$data = array('solution_id'=> $val, 'commu_type_id'=> $communications[$key],'user_id' => $user_id);
-					//$data_exist = $this->Subscription_Model->check_id_exist($table,$column,$data);
-				   // if(empty($data_exist[$column]))
+		      foreach($communications as $ckey=>$cval) {
+					$data = array('solution_id'=> $val, 'commu_type_id'=>$cval,'user_id' => $user_id);
+					$where =  " solution_id= $val AND commu_type_id = $cval  AND user_id = $user_id";
+					$data_exist = $this->Subscription_Model->check_id_exist($table,$column,$where );
+				    if(empty($data_exist[$column]))
 					$status = $this->Subscription_Model->insert_data($table,$data);
-				}	
+			}	
+	    }	
 	}
  
     echo json_encode(array("status" => $status));
@@ -277,35 +304,85 @@ class Subscription extends CI_Controller {
 	  $user_id = $this->Subscription_Model->insert_user($user_data );	
 	}	
 	//echo $user_id exit;
+	$user_id =1;
 	$user_data = $this->session->all_userdata();
 	$user_id = (!empty($user_data['id']))?$user_data['id']:	$user_id;
-	$table = "subscribe_category";
-   if($sites) {	
-	foreach($sites as $key=>$val) {
-					$where =  " entity_id= $val AND entity_type = 'site'  AND user_id = $user_id";
-					$status = $this->Subscription_Model->delete_data($table,$where);
-				}	
-	}
-	if($brands) {
-		 foreach($brands as $key=>$val)	{
-						
-						$where =  " entity_id= $val AND entity_type = 'brand'  AND user_id = $user_id";
-						$status = $this->Subscription_Model->delete_data($table,$where);
-		   }
-	}
-   if($categories) {
-		 //print_r($categories);
-	     foreach($categories as $key=>$val)	{
-					 $where =  " entity_id= $val AND entity_type = 'category'  AND user_id  = $user_id";
-					$status = $this->Subscription_Model->delete_data($table,$where);
+	if(empty($solutions)) {
+	 if($categories) {
+		foreach($categories as $key=>$val)	{
+		 $column = "id"; $where = "category =$val";
+		 $child_brand[$val] = $this->Subscription_Model->get_child_data('brand', $column,$where);
 		}
+	   }
+	   // print_r($solutionsdata);exit;
+	  // print_r($child_brand);
+	   $selected_brand = array();
+	   foreach($child_brand as $key=>$val) {
+			if($brands) {	
+			foreach($brands as $bkey=>$bval) {
+			  if (in_array($bval, $val)) {
+				 unset($child_brand[$key]);
+				 $selected_brand[$key][$bval] = $bval;
+				 //array_push($child_brbrandand,$temp_brand);
+			  }
+			}
+		  }		
+	   }  
+	   //print_r($temp_brand);
+	   $final_brand = (!empty($brands))?$selected_brand:  array_replace_recursive($selected_brand,$child_brand);
+	   //print_r($final_brand);
+	   if($final_brand) {
+		foreach($final_brand as $key=>$topval) {
+			foreach($topval as $ckey=>$cval) {	
+			 $column = "id"; $where = "brand =$cval";
+			 $child_site[$key][$cval] = $this->Subscription_Model->get_child_data('site', $column,$where);
+			}
+		}
+	   }
+	   //print_r($child_site);
+	   $selected_site = array();
+	   foreach($child_site as $key=>$val) {
+			 foreach($val as $bkey=>$bval) {
+			  if($sites) {		
+			  foreach($bval as $ckey=>$cval) {
+			  if (in_array($cval, $sites)) {
+				  unset($child_site[$key][$bkey]);
+				  $selected_site[$key][$bkey][$cval] = $cval;
+			    }				 
+			  }
+		     }
+		   }	   
+	    } 
+	  	
+      $final_site = (!empty($sites))?$selected_site:  array_replace_recursive($selected_site,$child_site); 
+	   //print_r($final_site);exit;
+	  $table = "subscribe_category";
+	//Stroing all the values
+	 foreach($final_site as $ckey=>$cval) {
+		foreach($cval as $bkey=>$bval) {
+			foreach($bval as $skey=>$sval)	{
+				$where =  " entity_id= $skey AND entity_type = 'site'  AND user_id = $user_id";
+				$status = $this->Subscription_Model->delete_data($table,$where);
+		      }
+			$where =  " entity_id= $bkey AND entity_type = 'brand'  AND user_id = $user_id";
+			//$status = $this->Subscription_Model->delete_data($table,$where);
+		   }
+			$where =  " entity_id= $ckey AND entity_type = 'category'  AND user_id = $user_id";
+			//$status = $this->Subscription_Model->delete_data($table,$where);
+     }
+    } 
+	if(empty($communications) ) {
+		 $communications = $this->Subscription_Model->get_communication_ids();
 	}
-   $table = "subscribe_solution"; 
-   if($solutions || $communications) {
+   $table_sol = "subscribe_solution"; 
+    if($solutions && $communications) {
 	  foreach($solutions as $key=>$val) {
-					$where =  " solution_id= $val OR commu_type_id = '$communications[$key]' AND user_id = $user_id";
-					$status = $this->Subscription_Model->delete_data($table,$where);
-			}	
+		      foreach($communications as $ckey=>$cval) {
+					$where =  " solution_id= $val AND commu_type_id = '$cval' AND user_id = $user_id";
+					$status = $this->Subscription_Model->delete_data($table_sol,$where);
+			}
+		}		
+			
 	}
 	echo json_encode(array("status" => $status));  
   } 
@@ -432,6 +509,16 @@ public function export() {
 		 $where_solution[] = $val;
 		}
 	   }
+	 
+		 if(empty($communications) ) {
+		 $communications = $this->Subscription_Model->get_communication_ids();
+		 }
+		 if($communications) {
+			foreach($communications as $ckey=>$cval) {
+			 $where_com[] = $cval;	
+			}	
+		 }
+
 	   // $com_id =2;
 		$this->db->select('sl.team as solution,cm.type as commu_type,u.email as user');
 		$this->db->from('solution sl');
@@ -439,6 +526,7 @@ public function export() {
 		$this->db->join('communication cm', '(ss.commu_type_id =cm.id)');
 		$this->db->join('users u', 'ss.user_id=u.id');
 		$this->db->where_in('solution_id',$where_solution);
+		$this->db->where_in('commu_type_id',$where_com);
 		//$this->db->where('commu_type_id',$com_id);
 		$query = $this->db->get(); 
 		$solutionsdata=array();
@@ -460,7 +548,7 @@ public function export() {
 		  }		
 	   }  
 	   //print_r($temp_brand);
-	   $final_brand = array_replace_recursive($child_brand,$selected_brand);
+	   $final_brand = array_replace_recursive($selected_brand,$child_brand);
 	   //print_r($final_brand);
 	   if($final_brand) {
 		foreach($final_brand as $key=>$topval) {
@@ -497,7 +585,7 @@ public function export() {
 		$this->db->join('users u', 'sc.user_id=u.id');
 		
 		$exceldata = array();$where = array();
-		foreach($child_site as $ckey=>$cval) {
+		foreach($final_site as $ckey=>$cval) {
 		 foreach($cval as $bkey=>$bval) {
 		  foreach($bval as $skey=>$sval) {
 			  $where[] = $skey;

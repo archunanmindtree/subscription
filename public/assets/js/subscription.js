@@ -9,11 +9,11 @@
 	}
 	
 $(document).ready(function() {
-	
+
 	//Scroll section 
-	$(".data-section").each(function () {
+	/*$(".data-section").each(function () {
 		$(this).hide();
-	}); 
+	});*/ 
 	$(document).on('click', ".lists", function(){
 		//alert("test");
 		if ($(this).hasClass("selected")){
@@ -42,9 +42,7 @@ $(document).ready(function() {
 		  $('#category_selected').html('');
                     
      });
-	
-   //$(".brandclass").hide();
-   //$(".siteclass").hide(); 	 
+	 
    $('#frm_category').validate({
  			submitHandler: function(form) {
 			//form.submit();
@@ -57,7 +55,7 @@ $(document).ready(function() {
                alert("Please choose any one from the list to proceed");				 
 			 }	 
 		      
-		      $listSelector = $("#category_selected") //Your list element
+		     $listSelector = $("#category_selected") //Your list element
 			 $.each(cat_names, function(i, obj) {
 			  $listSelector.append("<li><span>"+obj+"</span></li>")
 			 });
@@ -163,70 +161,115 @@ $(document).ready(function() {
      $('#frm_unsubscribe').validate({
 		  	
  			submitHandler: function(form) {
-			//form.submit();
-		    $('#category-submit').modal('show');
+				
+			 if(cat_ids.length > 0 || brand_ids.length > 0 || site_ids.length > 0  || sol_ids.length > 0 || com_ids.length > 0){
+		     $('#category-submit').modal('show');
+			 }else {
+               alert("Please choose any one from the list to proceed");				 
+			 }	 	
+		  
+		  // Brand selection details
+		  
+		    $listSelector = $("#category_selected") //Your list element
+			 $.each(cat_names, function(i, obj) {
+			  $listSelector.append("<li><span>"+obj+"</span></li>")
+			 });
+			// $('#category_selected').text(cat_names);
+			 
+			 var tmp_bname = []; var temp_id = brand_names;brand_name=[];site_name=[];
+			   console.log('null:'+brand_names.length);
+		
+		      $.each(cat_ids, function (id, val) {
+				
+				  if(temp_id.length > 0) {
+				
+				   $.each(temp_id, function (key, tval) {
 			
-			 var options = jQuery("#usercategory option:selected");
+				
+				    if (temp_id[key].cat != val ){
+						 tmp_bname.push('All brands and sites under the '+cat_names[id]+' category');
+					}else{
+					   tmp_bname.push(temp_id[key].brand);
+					} 
+				   });
+				  }else{
+					   tmp_bname.push('All brands and sites under the '+cat_names[id]+' category');
+				 }
+			});
+			 console.log(cat_ids+':'+tmp_bname);
+		
+			 var brand_name =  array_unique(tmp_bname);
+		
+			 $listSelector = $("#brand_selected") //Your list element
+			 $.each(brand_name, function(i, obj) {
+			  $listSelector.append("<li><span>"+obj+"</span></li>")
+			 });
+		
+		 
+		    var tmp_sitename = []; var temp_sid = site_names;
 			
-			var category_ids = jQuery.map(options, function (option) {
-			//console.log(option.value);
-			return option.text; //option.text;
-			});   	
-			$('#category_selected').text(category_ids);
+		     $.each(brand_ids, function (sid, sval) {
+				  
+				   if(temp_sid.length > 0) {
+				   $.each(temp_sid, function (skey, stval) {
+					
+					if (temp_sid[skey].brand != sval){
+						tmp_sitename.push('All sites under the '+brand_selected[sid]+' Brand');
+					}else
+						tmp_sitename.push(temp_sid[skey].site);
+				  });
+				}else
+					tmp_sitename.push('All sites under the '+brand_selected[sid]+' Brand');
+			  }); 
+			  
+	      	var site_name =  array_unique(tmp_sitename);
+       
+			$listSelector = $("#site_selected") //Your list element
+			$.each(site_name, function(i, obj) {
+			$listSelector.append("<li><span>"+obj+"</span></li>")
+			});
+
+			//solutions data
+		    $listSelector = $("#solution_selected") //Your list element
+			$.each(sol_names, function(i, obj) {
+			$listSelector.append("<li><span>"+obj+"</span></li>")
+			});	
+		
+			$listSelector = $("#communication_selected") //Your list element
+			$.each(com_names, function(i, obj) {
+			$listSelector.append("<li><span>"+obj+"</span></li>")
+			});	
 			
-			var options = jQuery("#userbrand option:selected");
-			var brand_ids = jQuery.map(options, function (option) {
-			//console.log(option.value);
-			return option.text; //option.text;
-			});   
-			$('#brand_selected').text(brand_ids);
-			
-			var options = jQuery("#usersite option:selected");
-			var site_ids = jQuery.map(options, function (option) {
-			//console.log(option.value);
-			return option.text; //option.text;
-			}); 
-			$('#site_selected').text(site_ids);	  
-			
-			/* solution page datas  */
-			var options = jQuery("#usersolution option:selected");
-			var solution_ids = jQuery.map(options, function (option) {
-			//console.log(option.value);
-			return option.text; //option.text;
-			});   	
-			$('#solution_selected').text(solution_ids);
-			
-			var options = jQuery("#usercommunication option:selected");
-			var communication_ids = jQuery.map(options, function (option) {
-			//console.log(option.value);
-			return option.text; //option.text;
-			});   
-			//console.log(communication_ids);
-			//if(communication_ids != "")
-			$('#communication_selected').text(communication_ids);
-			
-	 
+ 
     		  $('#submit').click(function(e){
 				  	e.preventDefault();
 				 // $('#frm_unsubscribe').submit();// form submit
 					 $.ajax({
 								url :base_url+"/subscription/unsubscribe", 
 								type: "POST",
-								data: $('#frm_unsubscribe').serialize(),
-								dataType: "JSON",
+								data:  {  category: cat_ids,
+										  brand: brand_ids,
+										  site:site_ids,
+										  solution:sol_ids,
+										  communication:com_ids,
+								
+										},
+								dataType: "json",
 								success: function(res)
 								{
-									//console.log(res); 
-									window.location.href  = base_url; 
-								  //location.reload();// for reload a page
+									console.log(res); 
+									 $('#category-submit').modal('hide');
+									 //alert(res);return false;
+									//window.location.href  = base_url+'/subscription'; 
+								     location.reload();// for reload a page
 								},
 								error: function (jqXHR, textStatus, errorThrown)
-								{
-									console.log(jqXHR); 
+								{   
+									
 									console.log(errorThrown); return false;
 									alert('Error adding / update data');
 								}
-							 });
+							});
 				});
 			}	
 	   }); 
@@ -416,20 +459,23 @@ $(document).ready(function() {
 			cat_ids.push(id);
 			cat_names.push( $("#"+id).text());
 	}
-		
+	var user_id = $('#user_id').val();
+	var brand_url = base_url+"/subscription/get_brands";	
 	if(cat_ids.length>0){
 	var request = $.ajax({
 			  type: "POST",
-			  data: 'category='+cat_ids,
+			  data: {   category: cat_ids,
+						user_id:user_id,
+					
+					},
 			  dataType: "json",
-			  url: base_url+"/subscription/get_brands", 
+			  url: brand_url, 
 			  });
 			  request.done(function( res ) {
 				// console.log(res);
 				if(res!=false)
 				{
 				  $(".brandclass").show();
-				  	  
 				  $("#brands").html(res);
 				// updateBrands(res);
 				}else
@@ -437,10 +483,11 @@ $(document).ready(function() {
 					
 			  });
 	}
-	else
-	{
-	    $("#brands").empty();
-    	$("#sites").empty();
+	else {
+		if(user_id=='' ){
+	     $("#brands").empty();
+    	 $("#sites").empty();
+		}
 	}
 
 }
@@ -484,25 +531,31 @@ function multipleids(id) {
 		brand_selected.push($("#brand #"+id).text());
 			
 	}
+	var user_id = $('#user_id').val();
 	if(brand_ids.length>0){
 	var request = $.ajax({
 	  type: "POST",
 	  dataType: "json",
-	  data: 'brand_id='+brand_ids,
+	  data: {   
+						brand_id: brand_ids,
+						user_id:user_id,
+					
+			},
 	  url: base_url+"/subscription/get_sites", 
 	  });
 	   request.done(function( urls ) {
 		 //console.log(urls);
 		if(urls!=false) {			
-	     $(".siteclass").show(); 
+	     //$(".siteclass").show(); 
          $("#sites").html(urls);		 
         // updateSites(urls);
 		}
-		else
-		 $(".siteclass").hide();
+		else {
+		 //$(".siteclass").hide();
+		}
       });
 	}
-	else{
+	else {
 		$("#sites").empty();
 	
 	}
@@ -579,6 +632,34 @@ var sol_ids = [];var sol_names =[];
 	if(a == 1){
 			sol_ids.push(id);
 			sol_names.push( $("#"+id).text());
+	}
+	var user_id = $('#user_id').val();
+	if(sol_ids.length>0){
+	var request = $.ajax({
+	  type: "POST",
+	  dataType: "json",
+	  data: {   
+						solution: sol_ids,
+						user_id:user_id,
+					
+			},
+	  url: base_url+"/subscription/get_communications", 
+	  });
+	   request.done(function( sol ) {
+		 //console.log(urls);
+		if(sol!=false) {			
+	     //$(".siteclass").show(); 
+         $("#communication").html(sol);		 
+        // updateSites(urls);
+		}
+		else {
+		 //$(".siteclass").hide();
+		}
+      });
+	}
+	else {
+		$("#communication").empty();
+	
 	}
  }	
  var com_ids = [];var com_names =[];

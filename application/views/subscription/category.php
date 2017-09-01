@@ -2,10 +2,10 @@
   <div class="container mycontainer_inner">
      <div class="container-fluid" role="main">
         <?php // Main content ?>
-	   
-	   <div class="row">
+   
 		<div class="col-xs-12" >
 		<form method="post" id="frm_category" class="form-inline" >
+		 <div class="row">
 			<div class="form-group col-md-4">
 			<label class="control-label dropdownTitle">Category</label>
 			 <div class="category" id="category" >
@@ -49,6 +49,7 @@
 				</div>
 			 </div>
 			</div>
+			</div>
 			 <div class="row"> 
 			 <div class="col-md-12" >
 			 <button type="submit" id="btnSave" class="btn catsubcriptionBtn"  >Subscribe</button>
@@ -56,35 +57,8 @@
 			</div>
 		 </form>
 		</div>
-	   	</div>
-	   
-		<!--<div class="row">
-		<div class="col-xs-12 " >
-		<form method="post" id="frm_add" class="form-inline" >
-			<div class="form-group  col-xs-4 col-md-4">
-			<label class="control-label">Category</label>
-			 <div class="category" >
-			<?php// echo form_multiselect('category[]', $categories, '','class="form-control required" size="20" id="category" tabindex="1" style="display:inline;width:250px;"');?>		  
-			</div>
-			</div>
-			<div class="form-group brandclass  col-xs-4 col-md-4">
-			<label class="control-label">Brand</label>
-			<select  id="brand" multiple="multiple" name="brand[]" style="width:250px;" size="20"  tabindex="2">
-			</select>
-			</div>
-			<div class="form-group siteclass  col-xs-4 col-md-4" >
-			<label class="control-label">Site</label>
-			<select  id="site" multiple="multiple" name="site[]" style="width:250px;" size="20" tabindex="3">
-			</select>
-			</div>
-			 <div class="row"> 
-			 <div class="col-sm-offset-2 " >
-			 <button type="submit" id="btnSave" class="btn btn-warning" >Subscribe</button>
-			 </div>
-			</div>
-		 </form>
-		</div>
-	</div>-->
+	   	
+		
    </div>
  </div>
 <div class="modal fade" id="category-submit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

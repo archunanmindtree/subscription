@@ -1,56 +1,91 @@
 <?php // Main body ?>
   <div class="container mycontainer_inner">
      <div class="container-fluid" role="main">
-
         <?php // Main content ?>
 	
 		<div class="col-xs-12 " >
 		<form method="post" id="frm_unsubscribe" class="form-inline" >
+		<input type="hidden" name="user_id" id="user_id" value="<?php echo $user_id;?>" />
 		<div class="row">
-		<div class="form-group  col-xs-4 col-md-4 label-pos">
-		<label class="control-label">Categories</label>
-		<div>
-		<?php echo form_multiselect('category[]', $categories, '','class="form-control" id="usercategory" tabindex="1" style="width:250px;"');?>		  
+			<div class="form-group col-md-4">
+			<label class="control-label dropdownTitle">Category</label>
+			 <div class="category" id="category" >
+				<div class="scrollbar" id="style">
+					<div class="force-overflow">
+
+						<ul class="list-group myUL" id="category">
+							<?php echo  $categories;?>
+						</ul> 
+					</div>
+				</div>
+			</div>
+			</div>
+			<div class="form-group brandclass col-md-4">
+			<label class="control-label dropdownTitle">Brand</label>
+			<div class="category">
+				<div class="scrollbar" id="style">
+					<div class="force-overflow">
+						
+					   <ul class="list-group myUL"   id="brand">
+					     <div id="brands">
+							<?php echo  $brands;?>
+						 </div>
+						</ul>
+						
+					</div>
+				</div>
+			 </div>
+			</div>
+			<div class="form-group  col-md-4" >
+			<label class="control-label dropdownTitle">Site</label>
+			<div class="category">
+				<div class="scrollbar" id="style">
+					<div class="force-overflow">
+					 <ul class="list-group myUL"   id="site">
+					 <div  id="sites">
+							<?php echo  $sites;?>
+						</div> 
+						</ul>
+					</div>
+				</div>
+			 </div>
+			</div>
 		</div>
-		</div>
-		<div class="form-group  col-xs-4 col-md-4 label-pos">
-		<label class="control-label">Brands</label>
-		<div>
-	     <?php echo form_multiselect('brand[]', $brands, '','class="form-control" id="userbrand" tabindex="2" style="width:250px;"');?>		  
-		</div>
-		</div>
-		<div class="form-group  col-xs-4 col-md-4 label-pos">
-		<label class="control-label">Sites</label>
-		<div>
-	    <?php echo form_multiselect('site[]', $sites, '','class="form-control " id="usersite" tabindex="3" style="width:250px;"');?>		  
-		</div>
-		</div>
-	   </div>
-	   <div class="row height_div">
-		<div class="form-group  col-xs-4 col-md-4 label-pos">
-		<label class="control-label">Solutions</label>
-		<div>
-	    <?php echo form_multiselect('solution[]', $solutions, '','class="form-control" id="usersolution" tabindex="4" style="width:250px;"');?>		  
-		</div>
-		</div>
-		<div class="form-group  col-xs-4 col-md-4 label-pos">
-		<label class="control-label">Communication Types</label>
-		<div>
-	    <?php echo form_multiselect('communication[]', $communications, '','class="form-control" id="usercommunication" tabindex="5" style="width:250px;"');?>		  
-		 </div>
-		</div>
-       </div>
-		
-		</div>
-		
-		 <div class="form-group col-xs-8 col-md-8"> 
+	   <div class="row">
+	     <div class="form-group col-md-5">
+           <label class="control-label dropdownTitle">Solution</label>
+				<div class="category" >
+				<div class="scrollbar" id="style">
+					<div class="force-overflow">
+						<ul class="myUL"  id="solution">
+							<?php echo  $solutions;?>
+						</ul>
+					</div>
+				</div>
+			</div>
+          </div>
+    
+	     <div class="form-group col-md-5">
+          <label class="control-label dropdownTitle">Communication</label>
+				<div class="category"  >
+				<div class="scrollbar" id="style">
+					<div class="force-overflow">
+						<ul class="myUL" id="communication">
+								<?php echo  $communications;?>
+						</ul>
+					</div>
+				</div>
+			</div>
+          </div>
+		 </div> 
+		 <div class="row col-xs-8 col-md-8"> 
 		 <div class="col-xs-12 " style="padding-left: 10px;padding-bottom: 10px;padding-top: 10px;">
 		 <center>
 		 <button type="submit" id="btnunsubSave" class="btn btn-warning" >Unsubscribe</button>
 		 </center>
 		 </div>
 		</div>
-		</form>
+	  </form>
 	</div>
    </div>
 </div>
@@ -67,24 +102,24 @@
                 <!-- We display the details entered by the user here -->
                 <table class="table">
                     <tr>
-                        <th>Category</th>
-                        <td id="category_selected"></td>
+                        <th style="border-top:0;">Category</th>
+                        <td id="category_selected" style="border-top:0;"></td>
                     </tr>
                     <tr>
-                        <th>Brand</th>
-                        <td id="brand_selected"></td>
+                        <th style="border-top:0;">Brand</th>
+                        <td id="brand_selected" style="border-top:0;"></td>
                     </tr>
 					 <tr>
-                        <th>Sites</th>
-                        <td id="site_selected"></td>
+                        <th style="border-top:0;">Sites</th>
+                        <td id="site_selected" style="border-top:0;"></td>
                     </tr>
 					 <tr>
-                        <th>Solutions</th>
-                        <td id="solution_selected"></td>
+                        <th style="border-top:0;">Solutions</th>
+                        <td id="solution_selected" style="border-top:0;"></td>
                     </tr>
 					 <tr>
-                        <th>Communication</th>
-                        <td id="communication_selected"></td>
+                        <th style="border-top:0;">Communication</th>
+                        <td id="communication_selected" style="border-top:0;"></td>
                     </tr>
                 </table>
             </div>

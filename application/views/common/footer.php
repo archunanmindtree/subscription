@@ -21,7 +21,7 @@
 <script type="text/javascript" src="<?php echo base_url("public/assets/bootstrap/js/bootstrap.min.js"); ?>"></script>
 <script type="text/javascript" src="<?php echo base_url("public/assets/js/jquery.validate.min.js"); ?>"></script>
 <script type="text/javascript" src="<?php echo base_url("public/assets/js/additional-methods.min.js"); ?>"></script>
-<script type="text/javascript" src="<?php echo base_url("public/assets/js/subscription.js?s232s"); ?>"></script>
+<script type="text/javascript" src="<?php echo base_url("public/assets/js/subscription.js?s4s43543s"); ?>"></script>
   
 </body>
 </html>
