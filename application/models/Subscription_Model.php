@@ -126,6 +126,28 @@ class Subscription_Model  extends CI_Model {
 	   return FALSE;
 	  }
    }
+   public function get_user_subscribed($table,$column = null,$user,$where = null){
+	 $this->db->select('uc.'.$column);
+	 $this->db->from($table.' uc');		
+     $this->db->join('subscribe_category sc', 'uc.id = sc.entity_id'); 
+	 if($user != NULL)  {
+	  $this->db->where('sc.user_id',$user);
+	 }
+	 if($where != NULL) {
+	 $this->db->where($where);
+	 }
+     $query = $this->db->get();
+	 if($query->result_array()){
+      foreach($query->result_array() as $row){
+       $data[$row[$column]] = $row[$column];   
+	   }
+	   //print_r($data);
+     return $data;
+	 }else{
+    return FALSE;
+    }
+} 
+   
    
  /* To get get_category data used on category page  */ 
  public function get_category($user=NULL){
@@ -214,7 +236,7 @@ class Subscription_Model  extends CI_Model {
 	}
 	//print_r(	$res);
 	return $res[0];
-  }
+   }
    public function get_brand_name($brand=NULL){
 	$this->db->select('brand,ct.category as category');
 	$this->db->from('brand bn');	
