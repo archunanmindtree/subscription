@@ -2,21 +2,21 @@
   
 <div class="container mycontainer">
    <div class="row">
-	 <div class="col-md-3 col-offset-sm-1" style="margin-left:12.33%">
+	 <div class="col-md-4 col-offset-sm-1">
 	 <a href="<?php echo base_url();?>subscription/category">
 		  <div class="panel panel-default catalog subscribebycategory">
 			<div class="panel-body box-size">
 				<div class="icon">
-					<img src="<?php echo base_url();?>public/assets/images/website.png"  width=120 height=122></img>
+					<img src="<?php echo base_url();?>public/assets/images/category_Subscription.svg"  width=120 height=122></img>
 				</div>
 				<div class="icon-description">
-				<a href="<?php echo base_url();?>subscription/category">Subscribe By Category</a>
+				<a href="<?php echo base_url();?>subscription/category">Subscribe By Brands</a>
 				</div>
 		  </div>
 	 </div> 
 	</a>
 	</div>	 
-	 <div class="col-md-3 col-xs-6 ">
+	 <div class="col-md-4">
 	 <a href="<?php echo base_url();?>subscription/solution">
 		  <div class="panel panel-default catalog subscribebysolution">
 			<div class="panel-body box-size">
@@ -31,7 +31,7 @@
 		  </a>
 	  </div>
 	  
-	   <div class="col-md-3 col-xs-6 ">
+	   <div class="col-md-4 ">
 	   <a href="<?php echo base_url();?>subscription/index">
 		  <div class="panel panel-default catalog mysubscription">
 			<div class="panel-body box-size">

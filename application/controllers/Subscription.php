@@ -84,7 +84,7 @@ class Subscription extends CI_Controller {
 		$solution_list = $this->Subscription_Model->get_user_solutions($user_id);
 		$data['solutions'] =$solution_list;
 		$communication_list = $this->Subscription_Model->get_user_communications($solution=null,$user_id);
-		$data['communications'] =$communication_list;
+		$data['communication'] =$communication_list;
 		
 		$this->load->view('subscription/mysubscription', $data);
 		$this->load->view('common/footer'); 
@@ -97,10 +97,10 @@ class Subscription extends CI_Controller {
    public function category()  {
         // setup page header data
 		$data['content'] = "";
-		$title  =  "Subscribe By Category";
+		$title  =  "Subscribe By Brands";
 		// add breadcrumb with Base Site URL (add without index.php in the url)
 		//$this->breadcrumbs->push('Subscription', '/subscription');
-		$this->breadcrumbs->push('Category', '/category');
+		$this->breadcrumbs->push('Brands', '/category');
 		// unshift crumb with Base Site URL (add without index.php in the url)
 		$this->breadcrumbs->unshift('Home', '/');
 	    $bread  = $this->breadcrumbs->show();
@@ -182,7 +182,7 @@ class Subscription extends CI_Controller {
 	$brands = $this->input->post('brand');
 	$sites = $this->input->post('site');
 	$solutions = $this->input->post('solution');
-	$communications = $this->input->post('communication');
+	$communications = ($this->input->post('communication'))?$this->input->post('communication'):'';
 	$email = $this->input->post('email_address');
 	$user_id = $this->Subscription_Model->user_exist($email );
 	if(empty($user_id)){
@@ -274,7 +274,9 @@ class Subscription extends CI_Controller {
      }	   
    }
   $table = "subscribe_solution"; $column = "id";
+
   if(empty($communications) ) {
+
     $communications = $this->Subscription_Model->get_communication_ids();
   }
   if($solutions && $communications) {
@@ -342,7 +344,7 @@ class Subscription extends CI_Controller {
 			}
 		}
 	   }
-	   //print_r($child_site);
+	  // print_r($child_site);
 	   $site_exist =$child_site;
 	   $selected_site = array();
 	   foreach($child_site as $key=>$val) {
@@ -360,17 +362,20 @@ class Subscription extends CI_Controller {
 				 unset($site_exist[$key][$bkey]);
 		   }	   
 	    } 
+		//print_r($site_exist);
 	  	//(!empty($sites))?$selected_site: 
       $final_site =  array_replace_recursive($selected_site,$child_site); 
-	  // print_r($final_site);exit;
+	  //print_r($final_site);exit;
 	  $table = "subscribe_category";
 	//Stroing all the values
 	 foreach($final_site as $ckey=>$cval) {
 		foreach($cval as $bkey=>$bval) {
+			if($bval) {		
 			foreach($bval as $skey=>$sval)	{
 				$where =  " entity_id= $skey AND entity_type = 'site'  AND user_id = $user_id";
 				$status = $this->Subscription_Model->delete_data($table,$where);
 		      }
+			} 
 			$where =  " entity_id= $bkey AND entity_type = 'brand'  AND user_id = $user_id";
 			 //print_r($site_exist);echo $bkey; exit;
 			 if(empty($site_exist[$ckey][$bkey]))
@@ -382,6 +387,7 @@ class Subscription extends CI_Controller {
 			$status = $this->Subscription_Model->delete_data($table,$where);
      }
     } 
+	
 	if(empty($communications) ) {
 		 $communications = $this->Subscription_Model->get_communication_ids();
 	}
@@ -508,7 +514,7 @@ public function export() {
 	   //print_r($categories);  print_r($brands);exit;
 	   $child_brand= array();$child_site = array();
 		   
-		if($categories) {
+		if(!empty($categories['0'])) {
 		foreach($categories as $key=>$val)	{
 		 $column = "id"; $where = "category =$val";
 		 $child_brand[$val] = $this->Subscription_Model->get_child_data('brand', $column,$where);
@@ -518,18 +524,18 @@ public function export() {
 	   if($solutions) {
 		foreach($solutions as $key=>$val)	{
 		 $where_solution[] = $val;
-		}
-	   }
-	 
-		 if(empty($communications) ) {
+		  }
+	    }
+ 	   if(empty($communications['0']) ) {
 		 $communications = $this->Subscription_Model->get_communication_ids();
 		 }
+		
 		 if($communications) {
 			foreach($communications as $ckey=>$cval) {
 			 $where_com[] = $cval;	
 			}	
-		 }
-
+		
+       //print_r($where_com);exit;
 	   // $com_id =2;
 		$this->db->select('sl.team as solution,cm.type as commu_type,u.email as user');
 		$this->db->from('solution sl');
@@ -539,7 +545,9 @@ public function export() {
 		$this->db->where_in('solution_id',$where_solution);
 		$this->db->where_in('commu_type_id',$where_com);
 		//$this->db->where('commu_type_id',$com_id);
-		$query = $this->db->get(); 
+		$query = $this->db->get();
+        }
+		
 		$solutionsdata=array();
 		foreach ($query->result_array() as $row){
 			$solutionsdata[] = $row;
@@ -547,8 +555,10 @@ public function export() {
 	   // print_r($solutionsdata);exit;
 	  // print_r($child_brand);
 	   $selected_brand = array();
+	   
+	   if(count ($child_brand)>0) {	
 	   foreach($child_brand as $key=>$val) {
-			if($brands) {	
+			if(!empty($brands['0'])) {	
 			foreach($brands as $bkey=>$bval) {
 			  if (in_array($bval, $val)) {
 				 unset($child_brand[$key]);
@@ -557,11 +567,12 @@ public function export() {
 			  }
 			}
 		  }		
-	   }  
+	     }  
+	   }  	
 	   //print_r($temp_brand);
 	   $final_brand = array_replace_recursive($selected_brand,$child_brand);
-	   //print_r($final_brand);
-	   if($final_brand) {
+	   if(count ($final_brand)>0) {
+		    //print_r($final_brand);exit;
 		foreach($final_brand as $key=>$topval) {
 			foreach($topval as $ckey=>$cval) {	
 			 $column = "id"; $where = "brand =$cval";
@@ -571,9 +582,10 @@ public function export() {
 	   }
 	   //print_r($child_site);
 	   $selected_site = array();
+	   if(count ($child_site)>0) {		
 	   foreach($child_site as $key=>$val) {
 			 foreach($val as $bkey=>$bval) {
-			  if($sites) {		
+			  if(!empty($sites['0'])) {		
 			  foreach($bval as $ckey=>$cval) {
 			  if (in_array($cval, $sites)) {
 				  unset($child_site[$key][$bkey]);
@@ -582,12 +594,13 @@ public function export() {
 			  }
 		     }
 		   }	   
-	    } 
+	     } 
+	    } 	
         //print_r($selected_site);
         //print_r($child_site);		
         $final_site = array_replace_recursive($selected_site,$child_site); 
 		//print_r($final_site);exit;
-		
+	   if(!empty($categories['0']) ) {	
 		$this->db->select('ct.category as category,ub.brand as brand,st.name as site,u.email as user');
         $this->db->from('category ct');
 		$this->db->join('brand ub', 'ct.id=ub.category');
@@ -611,7 +624,7 @@ public function export() {
 		$this->db->where_in('entity_id',$where);
 		$query = $this->db->get(); 
 		//echo $this->db->last_query();exit;
-				
+	   }		
 		
 		$brandsdata=array();
 		foreach ($query->result_array() as $row){
@@ -629,9 +642,11 @@ public function export() {
 		$this->excel->getActiveSheet()->setCellValue('C1', 'Sites');
 		$this->excel->getActiveSheet()->setCellValue('D1', 'Email');
 		
-	    //print_r($exceldata);exit;
- 
-		$this->excel->getActiveSheet()->fromArray($brandsdata, null, 'A2');
+	    //print_r($brandsdata);exit;
+    
+		if(empty($brandsdata)) $this->excel->getActiveSheet()->setCellValue('A2', 'No data matching to your filter');
+		else
+			$this->excel->getActiveSheet()->fromArray($brandsdata, null, 'A2');
 		
 		//sheet 2 creation 
 		if($solutionsdata) {

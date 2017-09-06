@@ -10,31 +10,26 @@
 	
 $(document).ready(function() {
 
-	//Scroll section 
-	/*$(".data-section").each(function () {
-		$(this).hide();
-	});*/ 
-	$(document).on('click', ".lists", function(){
-		//alert("test");
-		if ($(this).hasClass("selected")){
-		  $(this).removeClass("selected");
-		}
-		else{
-		  $(this).addClass("selected");
-		}
-	});
 	
-	$('li').click(function(){
-	$(this).css('background-color',"#337ab7")
-	$(this).css('border-bottom',"5px solid #fff")
-		$(this).find('a').css('color',"#fff")
+$(document).on('click', ".lists", function(){
+//alert("test");
+	if ($(this).hasClass("selected")){
+	  $(this).removeClass("selected");
+	}
+	else{
+	  $(this).addClass("selected");
+	}
+	});
 
+	$('li').click(function(){
+		$(this).css('background-color',"#337ab7")
+		$(this).css('border-bottom',"5px solid #fff")
+		$(this).find('a').css('color',"#fff")
 	});
 	$("li").click(function(){
-	$(this).data('clicked', true);
+		$(this).data('clicked', true);
 		$(this).css('background-color',"#fff")
 		$(this).find('a').css('color',"#000")
-		
 	});
 	 
 	$('#category-submit').on('hidden.bs.modal', function (e) {
@@ -44,17 +39,162 @@ $(document).ready(function() {
      });
 	 
    $('#frm_category').validate({
- 			submitHandler: function(form) {
-			//form.submit();
-			 //alert('sdsad'+cat_ids+"brand"+brand_ids);
-			 
-			 
-			 if(cat_ids.length > 0 || brand_ids.length > 0 || site_ids.length > 0  || sol_ids.length > 0 || com_ids.length > 0){
-		     $('#category-submit').modal('show');
-			 }else {
-               alert("Please choose any one from the list to proceed");				 
-			 }	 
-		      
+	   submitHandler: function(form) {
+		 if(cat_ids.length > 0 || brand_ids.length > 0 || site_ids.length > 0  || sol_ids.length > 0 || com_ids.length > 0){
+		 $('#category-submit').modal('show');
+		 }else {
+		   alert("Please choose any one from the list to proceed");				 
+		 }	 
+		 // Preparing the popup message and values 
+		 $listSelector = $("#category_selected") //Your list element
+		 $.each(cat_names, function(i, obj) {
+		  $listSelector.append("<li><span>"+obj+"</span></li>")
+		 });
+	 
+		 var tmp_bname = []; var temp_id = brand_names;brand_name=[];site_name=[];
+		   console.log('null:'+brand_names.length);
+		  //console.log('null:'+temp_id);
+		  $.each(cat_ids, function (id, val) {
+			
+			  if(temp_id.length > 0) {
+				  //console.log(temp_id[key].brand+':'+temp_id[key].cat);
+			   $.each(temp_id, function (key, tval) {
+				   //console.log(val+'null:'+temp_id+'selected'+temp_id[key].cat);
+			
+				if (temp_id[key].cat != val ){
+					 tmp_bname.push('All brands and sites under the '+cat_names[id]+' category');
+				}else{
+				   tmp_bname.push(temp_id[key].brand);
+				} 
+			   });
+			  }else{
+				   tmp_bname.push('All brands and sites under the '+cat_names[id]+' category');
+			 }
+		});
+		//console.log(cat_ids+':'+tmp_bname);
+		//console.log(cat_relid);
+		
+		 var brand_name =  array_unique(tmp_bname);
+		 //console.log(brand_name); 
+		 $listSelector = $("#brand_selected") //Your list element
+		 $.each(brand_name, function(i, obj) {
+		  $listSelector.append("<li><span>"+obj+"</span></li>")
+		 });
+				
+		// $('#brand_selected').text(tmp_bname);
+		
+		 
+		var tmp_sitename = []; var temp_sid = site_names;
+		
+		 $.each(brand_ids, function (sid, sval) {
+			  
+			   if(temp_sid.length > 0) {
+			   $.each(temp_sid, function (skey, stval) {
+				//console.log(temp_sid[skey].site+':'+temp_sid[skey].brand);
+				if (temp_sid[skey].brand != sval){
+					tmp_sitename.push('All sites under the '+brand_selected[sid]+' Brand');
+				}else
+					tmp_sitename.push(temp_sid[skey].site);
+			  });
+			}else
+				tmp_sitename.push('All sites under the '+brand_selected[sid]+' Brand');
+		  }); 
+		  
+	   var site_name =  array_unique(tmp_sitename);
+		
+		if(site_name.length==0) {
+			$("#site_msg").hide();
+		}
+   
+		$listSelector = $("#site_selected") //Your list element
+		$.each(site_name, function(i, obj) {
+		$listSelector.append("<li><span>"+obj+"</span></li>")
+		});
+		 
+        //solutions
+		if(sol_names.length==0) {
+			$("#sol_msg").hide();
+		}
+		 if(com_names.length==0) {
+			$("#com_msg").hide();
+		}	
+		$listSelector = $("#solution_selected") //Your list element
+		$.each(sol_names, function(i, obj) {
+		$listSelector.append("<li><span>"+obj+"</span></li>")
+		});	
+	  
+		$listSelector = $("#communication_selected") //Your list element
+		$.each(com_names, function(i, obj) {
+		 $listSelector.append("<li><span>"+obj+"</span></li>")
+		});	
+	   // $('#category_selected').text(cat_names);	
+	   //send data to DB on click submit and show progress bar
+	   $('#submit').click(function(e){
+		   
+		//Proggress bar script 
+		var timerId, percent;
+		percent = 0;
+
+		$('#load').css('width', '0px');
+		$('#load').addClass('progress-bar-striped active');
+		timerId = setInterval(function() {
+		$('#submit_progress').css('display', 'inline');
+		// increment progress bar
+		percent += 5;
+		$('#load').css('width', percent + '%');
+		$('#load').html(percent + '%');
+
+		// complete
+		if (percent >= 100) {
+		clearInterval(timerId);
+	
+		$('#load').removeClass('progress-bar-striped active');
+		$('#load').html('Done');
+		//Proggress bar script 
+			  
+		// Start sending data to DB section
+						 
+		 e.preventDefault();
+			// $('#frm_add').submit();// form submit
+		 $.ajax({
+				url :base_url+"/subscription/submit", 
+				type: "POST",
+				data:  {  category: cat_ids,
+						  brand: brand_ids,
+						  site:site_ids,
+						  solution:sol_ids,
+						  communication:com_ids,
+				
+						},
+				 dataType: "json",
+				 success: function(res)	{
+						//console.log(res); 
+						 $('#category-submit').modal('hide');
+						
+						  window.location.href  = base_url+'/subscription'; 
+					    //location.reload();// for reload a page
+					},
+				 error: function (jqXHR, textStatus, errorThrown) {   
+						console.log(errorThrown); return false;
+						alert('Error adding / update data');
+				  }
+				});
+				  // end ajax script 
+			  }
+			}, 250); //Ends progress
+						 
+		  });// ends of submit click
+		}  // end of submit
+		 
+	 });
+     $('#frm_unsubscribe').validate({
+ 		submitHandler: function(form) {
+		 if(cat_ids.length > 0 || brand_ids.length > 0 || site_ids.length > 0  || sol_ids.length > 0 || com_ids.length > 0){
+		 $('#category-submit').modal('show');
+		 }else {
+		   alert("Please choose any one from the list to proceed");				 
+		 }	 	
+		    // Brand selection details
 		     $listSelector = $("#category_selected") //Your list element
 			 $.each(cat_names, function(i, obj) {
 			  $listSelector.append("<li><span>"+obj+"</span></li>")
@@ -63,121 +203,6 @@ $(document).ready(function() {
 			 
 			 var tmp_bname = []; var temp_id = brand_names;brand_name=[];site_name=[];
 			   console.log('null:'+brand_names.length);
-			  //console.log('null:'+temp_id);
-		      $.each(cat_ids, function (id, val) {
-				
-				  if(temp_id.length > 0) {
-					  //console.log(temp_id[key].brand+':'+temp_id[key].cat);
-				   $.each(temp_id, function (key, tval) {
-					   //console.log(val+'null:'+temp_id+'selected'+temp_id[key].cat);
-				
-				    if (temp_id[key].cat != val ){
-						 tmp_bname.push('All brands and sites under the '+cat_names[id]+' category');
-					}else{
-					   tmp_bname.push(temp_id[key].brand);
-					} 
-				   });
-				  }else{
-					   tmp_bname.push('All brands and sites under the '+cat_names[id]+' category');
-				 }
-			});
-			console.log(cat_ids+':'+tmp_bname);
-		    //console.log(cat_relid);
-			
-			 var brand_name =  array_unique(tmp_bname);
-			 //console.log(brand_name); 
-			 $listSelector = $("#brand_selected") //Your list element
-			 $.each(brand_name, function(i, obj) {
-			  $listSelector.append("<li><span>"+obj+"</span></li>")
-			 });
-		
-              			
-			// $('#brand_selected').text(tmp_bname);
-			// console.log(brand_names); 
-			 
-		    var tmp_sitename = []; var temp_sid = site_names;
-			
-		     $.each(brand_ids, function (sid, sval) {
-				  
-				   if(temp_sid.length > 0) {
-				   $.each(temp_sid, function (skey, stval) {
-					//console.log(temp_sid[skey].site+':'+temp_sid[skey].brand);
-					if (temp_sid[skey].brand != sval){
-						tmp_sitename.push('All sites under the '+brand_selected[sid]+' Brand');
-					}else
-						tmp_sitename.push(temp_sid[skey].site);
-				  });
-				}else
-					tmp_sitename.push('All sites under the '+brand_selected[sid]+' Brand');
-			  }); 
-			  
-	      	var site_name =  array_unique(tmp_sitename);
-       
-			$listSelector = $("#site_selected") //Your list element
-			$.each(site_name, function(i, obj) {
-			$listSelector.append("<li><span>"+obj+"</span></li>")
-			});
-
-			// $('#site_selected').text(tmp_sitename);
-             //console.log(site_names); 			 
-
-			 
-			 $('#solution_selected').text(sol_names);
-			 	console.log(com_ids+com_names); 
-			 $('#communication_selected').text(com_names);
-		     $('#submit').click(function(e){
-			 e.preventDefault();
-				// $('#frm_add').submit();// form submit
-			 $.ajax({
-						url :base_url+"/subscription/submit", 
-						type: "POST",
-						data:  {  category: cat_ids,
-								  brand: brand_ids,
-								  site:site_ids,
-								  solution:sol_ids,
-								  communication:com_ids,
-						
-								},
-						dataType: "json",
-						success: function(res)
-						{
-							console.log(res); 
-							 //alert(res);return false;
-							window.location.href  = base_url+'/subscription'; 
-						  //location.reload();// for reload a page
-						},
-						error: function (jqXHR, textStatus, errorThrown)
-						{   
-							
-							console.log(errorThrown); return false;
-							alert('Error adding / update data');
-						}
-					 });
-							 
-					});
-			}
-		 
-	 });
-     $('#frm_unsubscribe').validate({
-		  	
- 			submitHandler: function(form) {
-				
-			 if(cat_ids.length > 0 || brand_ids.length > 0 || site_ids.length > 0  || sol_ids.length > 0 || com_ids.length > 0){
-		     $('#category-submit').modal('show');
-			 }else {
-               alert("Please choose any one from the list to proceed");				 
-			 }	 	
-		  
-		  // Brand selection details
-		  
-		    $listSelector = $("#category_selected") //Your list element
-			 $.each(cat_names, function(i, obj) {
-			  $listSelector.append("<li><span>"+obj+"</span></li>")
-			 });
-			// $('#category_selected').text(cat_names);
-			 
-			 var tmp_bname = []; var temp_id = brand_names;brand_name=[];site_name=[];
-			   console.log('null:'+brand_names.length);
 		
 		      $.each(cat_ids, function (id, val) {
 				
@@ -196,8 +221,7 @@ $(document).ready(function() {
 					   tmp_bname.push('All brands and sites under the '+cat_names[id]+' category');
 				 }
 			});
-			 console.log(cat_ids+':'+tmp_bname);
-		
+				
 			 var brand_name =  array_unique(tmp_bname);
 		
 			 $listSelector = $("#brand_selected") //Your list element
@@ -223,26 +247,58 @@ $(document).ready(function() {
 			  }); 
 			  
 	      	var site_name =  array_unique(tmp_sitename);
+			console.log(site_name );
+			if(site_name.length==0) {
+				$("#site_msg").hide();
+			}
        
 			$listSelector = $("#site_selected") //Your list element
 			$.each(site_name, function(i, obj) {
 			$listSelector.append("<li><span>"+obj+"</span></li>")
 			});
 
+			 if(sol_names.length==0) {
+				$("#sol_msg").hide();
+			}
+			 if(com_names.length==0) {
+				$("#com_msg").hide();
+			}	
 			//solutions data
 		    $listSelector = $("#solution_selected") //Your list element
 			$.each(sol_names, function(i, obj) {
 			$listSelector.append("<li><span>"+obj+"</span></li>")
 			});	
-		
+		  
 			$listSelector = $("#communication_selected") //Your list element
 			$.each(com_names, function(i, obj) {
 			$listSelector.append("<li><span>"+obj+"</span></li>")
 			});	
+
+    	   $('#submit').click(function(e){
+				  
+				  //Proggress bar script 
+			var timerId, percent;
+			percent = 0;
+
+			$('#load').css('width', '0px');
+			$('#load').addClass('progress-bar-striped active');
+			timerId = setInterval(function() {
+
+			$('#submit_progress').css('display', 'inline');
+			// increment progress bar
+			percent += 5;
+			$('#load').css('width', percent + '%');
+			$('#load').html(percent + '%');
+
+			// complete
+			if (percent >= 100) {
+			clearInterval(timerId);
 			
- 
-    		  $('#submit').click(function(e){
-				  	e.preventDefault();
+			$('#load').removeClass('progress-bar-striped active');
+			$('#load').html('Done');
+			//Proggress bar script 
+			  
+				 e.preventDefault();
 				 // $('#frm_unsubscribe').submit();// form submit
 					 $.ajax({
 								url :base_url+"/subscription/unsubscribe", 
@@ -257,7 +313,7 @@ $(document).ready(function() {
 								dataType: "json",
 								success: function(res)
 								{
-									console.log(res); 
+									 //console.log(res); 
 									 $('#category-submit').modal('hide');
 									 //alert(res);return false;
 									//window.location.href  = base_url+'/subscription'; 
@@ -270,6 +326,8 @@ $(document).ready(function() {
 									alert('Error adding / update data');
 								}
 							});
+					  }
+			      }, 250); //Ends progress		
 				});
 			}	
 	   }); 
@@ -296,10 +354,10 @@ $(document).ready(function() {
 					  //window.location.href  = base_url+'/subscription/admin'; 
 					  location.reload();// for reload a page
 					},
-					error: function (jqXHR, textStatus, errorThrown){   
-						console.log(errorThrown);
-						alert('Error in import ');
-					}
+				error: function (jqXHR, textStatus, errorThrown){   
+					console.log(errorThrown);
+					alert('Error in import ');
+				}
 			});		
 		}
 		 
@@ -317,7 +375,8 @@ $(document).ready(function() {
  function export_excel() {
 
        var submit_val = $('#export').val();
-		if(cat_ids.length <=0 && brand_ids.length <= 0 && site_ids.length <= 0 ) {
+   
+		if(cat_ids.length <=0 && brand_ids.length <= 0 && site_ids.length <= 0 && sol_ids.length <= 0 && com_ids.length <= 0  ) {
 		  alert("Please choose any one from the list");		
 		 }
 		else  {
@@ -346,80 +405,79 @@ $(document).ready(function() {
        }
  }
   function add_subscription() {
-	   //form.submit();
-	   // $('#frm_admin').submit();
-	     var email = $('#email_address').val();
-		 //console.log(email); 
-		 	if(cat_ids.length <=0 && brand_ids.length <= 0 && site_ids.length <= 0 ) {
-		      alert("Please choose any one from the list");		
-			 }
-			else  if(email=='') {
-			  alert("Please enter the email address of user to subscribe");
-			}
-			else {
-			 $.ajax({
-					url :base_url+"/subscription/submit", 
-					type: "POST",
-					data:  {  category: cat_ids,
-							  brand: brand_ids,
-							  site:site_ids,
-							  email_address:email,
-					
-							},
-					dataType: "json",
-					success: function(res)	{
-						console.log(res); 
-						 //alert(res);return false;
-						 window.location.href  = base_url+'/subscription'; 
-					  //location.reload();// for reload a page
+
+   var email = $('#email_address').val();
+ //console.log(email); 
+	if(cat_ids.length <=0 && brand_ids.length <= 0 && site_ids.length <= 0 && sol_ids.length <= 0 && com_ids.length <= 0  ) {
+	  alert("Please choose any one from the list");		
+	 }
+	else  if(email=='') {
+	  alert("Please enter the email address of user to subscribe");
+	}
+	else {
+	 $.ajax({
+			url :base_url+"/subscription/submit", 
+			type: "POST",
+			data:  {  category: cat_ids,
+					  brand: brand_ids,
+					  site:site_ids,
+					  solution:sol_ids,
+					  communication:com_ids,
+					  email_address:email,
+			
 					},
-					error: function (jqXHR, textStatus, errorThrown) {   
-						
-						console.log(errorThrown); return false;
-						alert('Error adding / update data');
-					}
-				 });
-			}	 
+			dataType: "json",
+			success: function(res)	{
+				//console.log(res); 
+				 //alert(res);return false;
+				 window.location.href  = base_url+'/subscription'; 
+			  //location.reload();// for reload a page
+			},
+			error: function (jqXHR, textStatus, errorThrown) {   
+				
+				console.log(errorThrown); return false;
+				alert('Error adding / update data');
+			}
+		 });
+	 }	 
 
   }
-  function remove_subscription() {
-	   //form.submit();
-	  // $('#frm_admin').submit();
-	   var email = $('#email_address').val();
-				// $('#frm_add').submit();// form submit
-			//console.log(email); 
+function remove_subscription() {
+    var email = $('#email_address').val();
+	
+	if(cat_ids.length <=0 && brand_ids.length <= 0 && site_ids.length <= 0 && sol_ids.length <= 0 && com_ids.length <= 0   ) {
+	  alert("Please choose any one from the list");		
+	 }
+	else  if(email=='') {
+		alert("Please enter the email address of user to subscribe");
+	}
+	else {
+	
+	$.ajax({
+			url :base_url+"/subscription/unsubscribe", 
+			type: "POST",
+			data:  {  category: cat_ids,
+					  brand: brand_ids,
+					  site:site_ids,
+					  solution:sol_ids,
+					  communication:com_ids,
+					  email_address:email,
 			
-		    if(cat_ids.length <=0 && brand_ids.length <= 0 && site_ids.length <= 0 ) {
-		      alert("Please choose any one from the list");		
-			 }
-			else  if(email=='') {
-				alert("Please enter the email address of user to subscribe");
-			}
-			else {
-			
-		    $.ajax({
-					url :base_url+"/subscription/unsubscribe", 
-					type: "POST",
-					data:  {  category: cat_ids,
-							  brand: brand_ids,
-							  site:site_ids,
-							  email_address:email,
-					
-							},
-					dataType: "json",
-					success: function(res)	{
-						console.log(res); 
-						 //alert(res);return false;
-						 window.location.href  = base_url+'/subscription'; 
-					  //location.reload();// for reload a page
 					},
-					error: function (jqXHR, textStatus, errorThrown) {   
-						
-						console.log(errorThrown); return false;
-						alert('Error adding / update data');
-					}
-				 });
-			}			 
+			dataType: "json",
+			success: function(res)	{
+				//console.log(res); 
+				 //alert(res);return false;
+				 window.location.href  = base_url+'/subscription'; 
+			  //location.reload();// for reload a page
+			},
+			error: function (jqXHR, textStatus, errorThrown) {   
+				
+				console.log(errorThrown); return false;
+				alert('Error adding / update data');
+			}
+		 });
+	}			 
 
  }
  		 
@@ -646,7 +704,7 @@ var sol_ids = [];var sol_names =[];
 	  url: base_url+"/subscription/get_communications", 
 	  });
 	   request.done(function( sol ) {
-		 //console.log(urls);
+		 console.log(sol);
 		if(sol!=false) {			
 	     //$(".siteclass").show(); 
          $("#communication").html(sol);		 

@@ -2,16 +2,17 @@
   <div class="container mycontainer_inner">
      <div class="container-fluid" role="main">
         <?php // Main content ?>
-	   
-	   <div class="row">
-		<div class="col-md-12" >
+	
+		<div class="col-xs-12 " >
 		<form method="post" id="frm_unsubscribe" class="form-inline" >
-			<input type="hidden" name="user_id" id="user_id" value="<?php echo $user_id;?>" />
+		<input type="hidden" name="user_id" id="user_id" value="<?php echo $user_id;?>" />
+		<div class="row">
 			<div class="form-group col-md-4">
-			<label class="control-label dropdownTitle">Brands</label>
+			<label class="control-label dropdownTitle">Category</label>
 			 <div class="category" id="category" >
-				<div class="demo">
-					<div class="scrollbar-inner">
+				<div class="scrollbar" id="style">
+					<div class="force-overflow">
+
 						<ul class="list-group myUL" id="category">
 							<?php echo  $categories;?>
 						</ul> 
@@ -22,9 +23,10 @@
 			<div class="form-group brandclass col-md-4">
 			<label class="control-label dropdownTitle">Brand</label>
 			<div class="category">
-				<div class="demo">
-					<div class="scrollbar-inner">						
-					   <ul class="list-group myUL" id="brand">
+				<div class="scrollbar" id="style">
+					<div class="force-overflow">
+						
+					   <ul class="list-group myUL"   id="brand">
 					     <div id="brands">
 							<?php echo  $brands;?>
 						 </div>
@@ -34,25 +36,27 @@
 				</div>
 			 </div>
 			</div>
-			<div class="form-group siteclass col-md-4" >
+			<div class="form-group  col-md-4" >
 			<label class="control-label dropdownTitle">Site</label>
 			<div class="category">
-				<div class="demo">
-					<div class="scrollbar-inner">
-					 <ul class="list-group myUL" id="sites">
-					
+				<div class="scrollbar" id="style">
+					<div class="force-overflow">
+					 <ul class="list-group myUL"   id="site">
+					 <div  id="sites">
 							<?php echo  $sites;?>
-						
+						</div> 
 						</ul>
 					</div>
 				</div>
 			 </div>
 			</div>
-			<div class="form-group col-md-6">
+		</div>
+	   <div class="row">
+	     <div class="form-group col-md-5">
            <label class="control-label dropdownTitle">Solution</label>
 				<div class="category" >
-				<div class="demo">
-					<div class="scrollbar-inner">
+				<div class="scrollbar" id="style">
+					<div class="force-overflow">
 						<ul class="myUL"  id="solution">
 							<?php echo  $solutions;?>
 						</ul>
@@ -61,28 +65,30 @@
 			</div>
           </div>
     
-	     <div class="form-group col-md-6">
+	     <div class="form-group col-md-5">
           <label class="control-label dropdownTitle">Communication</label>
 				<div class="category"  >
-				<div class="demo">
-					<div class="scrollbar-inner">
+				<div class="scrollbar" id="style">
+					<div class="force-overflow">
 						<ul class="myUL" id="communication">
-								<?php //echo  $communication;?>
+								<?php echo  $communications;?>
 						</ul>
 					</div>
 				</div>
 			</div>
-         </div>
-			 <div class="row"> 
-			 <div class="col-md-12">
-			 <button type="submit" id="btnSave" class="btn catsubcriptionBtn">Unsubscribe</button>
-			 </div>
-			</div>
-		 </form>
+          </div>
+		 </div> 
+		 <div class="row col-xs-8 col-md-8"> 
+		 <div class="col-xs-12 " style="padding-left: 10px;padding-bottom: 10px;padding-top: 10px;">
+		 <center>
+		 <button type="submit" id="btnunsubSave" class="btn btn-warning" >Unsubscribe</button>
+		 </center>
+		 </div>
 		</div>
-	   	</div>
+	  </form>
+	</div>
    </div>
- </div>
+</div>
 <div class="modal fade" id="category-submit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -92,11 +98,6 @@
             </div>
             <div class="modal-body">
                 
-			 <div class="progress" id="submit_progress" style="width:100%;display:none">
-			  <div class="progress-bar progress-bar-success " role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="load" style="width:0%">
-				0%
-			  </div>
-			</div>	
 
                 <!-- We display the details entered by the user here -->
                 <table class="table">
@@ -104,19 +105,19 @@
                         <th style="border-top:0;">Category</th>
                         <td id="category_selected" style="border-top:0;"></td>
                     </tr>
-                    <tr id ="brand_msg">
+                    <tr>
                         <th style="border-top:0;">Brand</th>
                         <td id="brand_selected" style="border-top:0;"></td>
                     </tr>
-					 <tr id ="site_msg">
+					 <tr>
                         <th style="border-top:0;">Sites</th>
                         <td id="site_selected" style="border-top:0;"></td>
                     </tr>
-					 <tr id ="sol_msg">
+					 <tr>
                         <th style="border-top:0;">Solutions</th>
                         <td id="solution_selected" style="border-top:0;"></td>
                     </tr>
-					 <tr id ="com_msg">
+					 <tr>
                         <th style="border-top:0;">Communication</th>
                         <td id="communication_selected" style="border-top:0;"></td>
                     </tr>

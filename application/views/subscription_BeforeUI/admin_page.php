@@ -3,23 +3,24 @@
      <div class="container-fluid" role="main">
         <?php // Main content ?>
 	   
-	   <!--<div class="row col-md-12" > 
+	   <div class="row col-md-12" > 
 			    <div class="btn-group col-md-offset-5">
 				 
 			   </div>
-		</div> -->
+		</div>
 	   
-		<div class="col-md-12" >
+		<div class="col-xs-12" >
 		<form method="post" id="frm_admin" class="form-inline" >
 		 <div class="panel panel-default">
-			<div class="panel-heading">Manage By Brands and Solutions</div>
+			<div class="panel-heading">Export(Brand's and Solution's) and Import(Brand's)</div>
 			 <div class="panel-body">
 		     <div class="row">
 				<div class="form-group col-md-4">
-				<label class="control-label dropdownTitle">Brands</label>
+				<label class="control-label dropdownTitle">Category</label>
 				 <div class="category" id="category" >
-					<div class="demo">
-				<div class="scrollbar-inner">	
+					<div class="scrollbar" id="style">
+						<div class="force-overflow">
+
 							<ul class="list-group myUL" id="category">
 								<?php echo  $categories;?>
 							</ul> 
@@ -30,9 +31,10 @@
 				<div class="form-group brandclass col-md-4">
 				<label class="control-label dropdownTitle">Brand</label>
 				<div class="category">
-					<div class="demo">
-				<div class="scrollbar-inner">		
-				<ul class="list-group myUL"   id="brand">
+					<div class="scrollbar" id="style">
+						<div class="force-overflow">
+							
+						   <ul class="list-group myUL"   id="brand">
 							 <div id="brands">
 								<?php //echo  $brands;?>
 							 </div>
@@ -45,8 +47,8 @@
 				<div class="form-group siteclass col-md-4" >
 				<label class="control-label dropdownTitle">Site</label>
 				<div class="category">
-					<div class="demo">
-				<div class="scrollbar-inner">		
+					<div class="scrollbar" id="style">
+						<div class="force-overflow">
 						 <ul class="list-group myUL"   id="site">
 						 <div  id="sites">
 								<?php //echo  $sites;?>
@@ -61,11 +63,11 @@
 			 
 			<div class="row">
 
-			 <div class="form-group col-md-6">
+			 <div class="form-group col-md-5">
             <label class="control-label dropdownTitle">Solution</label>
 				<div class="category" >
-				<div class="demo">
-				<div class="scrollbar-inner">		
+				<div class="scrollbar" id="style">
+					<div class="force-overflow">
 						<ul class="myUL"  id="solution">
 							<?php echo  $solutions;?>
 						</ul>
@@ -74,11 +76,11 @@
 			</div>
           </div>
     
-	     <div class="form-group col-md-6">
+	     <div class="form-group col-md-5">
           <label class="control-label dropdownTitle">Communication</label>
 				<div class="category"  >
-				<div class="demo">
-				<div class="scrollbar-inner">		
+				<div class="scrollbar" id="style">
+					<div class="force-overflow">
 						<ul class="myUL" id="communication">
 								<?php echo  $com_list;?>
 						</ul>
@@ -87,38 +89,38 @@
 			</div>
           </div>
          </div>
-		    <div class="row"> 
-		 <div class="col-md-12 AlnCen">
-			   <div class="form-group">
+			 
+			  <div class="row col-md-12" > 
+			    <div class="btn-group col-md-offset-5">
+				  <button type="button" id="import"  class="btn btn-primary" onclick="import_excel()" >Upload list</button>
+				  <button type="button" id="export"  name ="export" value="export" class="btn btn-primary" onclick="export_excel()"  >Export list</button>
+			   </div>
+			
+	    	</div>
+		  </div> 
+		 </div> 
+			
+	   <div class="panel panel-default">
+		<div class="panel-heading">Subcribe By Brand's</div>
+		 <div class="panel-body">
+		  <div class="row col-md-12"> 
+		 
+			   <div class="form-group col-md-offset-4"  >
 			    <label class="control-label">Email  </label>
 				<div class="input-group">
                 <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
 			    <input type="text" class="form-control"  placeholder="Enter email address" id="email_address" name="email_address"/>
 			    </div>
 			   </div>
-			   <div class="form-group">
-			     <div class="btn-group">
-			     <button type="button" id="btnaddSave" class="btn bt_save" onclick="add_subscription()">Add</button>
-				 <button type="button" id="btnremoveSave" class="btn bt_save"  onclick="remove_subscription()">Remove</button>
+			   <div class="form-group " >
+			     <div class="btn-group btn-group-sm">
+			     <button type="button" id="btnaddSave" class="btn btn-primary bt_save" onclick="add_subscription()">Add</button>
+				 <button type="button" id="btnremoveSave" class="btn btn-primary bt_save"  onclick="remove_subscription()">Remove</button>
 				 </div>
 			   </div>
 		    </div>
-			</div>
-			 
-			  <div class="row" > 
-			   
-				<div class="col-md-6 floatLft">
-				  <button type="button" id="import"  class="btn AdminBtn" onclick="import_excel()" >Upload list</button>
-				</div> 
-				<div class="col-md-6 floatRft">				
-				  <button type="button" id="export"  name ="export" value="export" class="btn AdminBtn" onclick="export_excel()"  >Export list</button>
-				</div>    
-			   
-			
-	    	</div>
-		  </div> 
 		 </div> 
-			
+		</div> 	 
 		 </form>
 		
 	   	</div>

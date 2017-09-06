@@ -15,7 +15,8 @@
 	<link rel="stylesheet" href="<?php echo base_url();?>public/assets/bootstrap/css/bootstrap-responsive.min.css?sss" />
     <!--<link rel="stylesheet" href="<?php //echo base_url();?>public/assets/bootstrap/css/bootstrap-chosen.css?12" />-->
 	<link rel="stylesheet" href="<?php echo base_url();?>public/assets/css/subscription.css?897824" /> 
-
+	<link rel="stylesheet" href="<?php echo base_url();?>public/assets/css/scrollbar.css" /> 
+	
     <?php // CSS files 
 	
 	
@@ -33,46 +34,68 @@
     <script src="<?php echo base_url();?>public/assets/js/respond.min.js"></script>
     <![endif]-->
    <title><?php echo $title;?></title>
+   
+<script>
+                					
+                     
+/* When the user clicks on the button, 
+toggle between hiding and showing the dropdown content */
+function myFunction() {
+    document.getElementById("myDropdown").classList.toggle("show");
+}
 
+// Close the dropdown if the user clicks outside of it
+window.onclick = function(event) {
+  if (!event.target.matches('.dropbtn')) {
+
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    var i;
+    for (i = 0; i < dropdowns.length; i++) {
+      var openDropdown = dropdowns[i];
+      if (openDropdown.classList.contains('show')) {
+        openDropdown.classList.remove('show');
+      }
+    }
+  }
+}
+</script>
 </head>
 <body>
 	<nav class="topnav"></nav>
-	<nav class="navbar mainNavigation">
-		<div class="container">
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>  
-				</button>      
-			</div>
-			<div class="collapse navbar-collapse" id="myNavbar">
-				<a class="navbar-brand header-logo" href="http://subscription.local/#"><img src="<?php echo base_url();?>public/assets/images/logopggide.png" alt="logo"/></a>
-				<ul class="nav navbar-nav">
+<div class="container-fluid">
+<div class="row">
+<div class="col-md-6 Logoheader">
+				<a class="header-logo" href="http://subscription.local/#">
+				<img src="<?php echo base_url();?>public/assets/images/logopggide.png" alt="logo"/> </a>
 				<h2 class="header">Consumer Solution Subscription System</h2>
-					 <!--<li class="<?php echo $classhome;?>"> <a href="<?php echo base_url();?>">Home</a></li>
-					<li class="<?php echo $classcategory;?>"><a href="<?php echo base_url();?>subscription/category">Subscribe By Category</a></li>
-					<li class="<?php echo $classsolution;?>"><a href="<?php echo base_url();?>subscription/solution">Subscribe By Solution</a></li>
-					<li class="<?php echo $classmysubscription;?>"><a href="<?php echo base_url();?>subscription/index">My Subscriptions</a></li>-->
-				</ul>
-				<ul class="nav navbar-nav pull-right">
-					<?php //if(!empty($userdata['id'])>0){ ?>
-				   <li><a href="<?php echo base_url();?>user">Hello, Vijay! <?php //echo ucfirst($userdata['username']);?> </a></li>
-				   <li><a href="<?php echo base_url();?>user"><span class="glyphicon glyphicon-log-out"></span> logout</a></li>
-				  <?php //}else { ?>
-					 <!--<li><a href="<?php echo base_url();?>user/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>-->
-				  <?php //} ?>
-				</ul>
 			</div>
-		</div>
-	</nav>
+	<div class="col-md-6 welcomeContainer">	
+			<span class="welcomeTxt">
+		Welcome Rajesh!
+		</span>
+<div class="dropdown">
+<button onclick="myFunction()" class="dropbtn"></button>
+  <div id="myDropdown" class="dropdown-content">
+    <a href="<?php echo base_url();?>">Home</a>
+	<a href="<?php echo base_url();?>subscription/category">Subscribe By Brands</a>
+	<a href="<?php echo base_url();?>subscription/solution">Subscribe By Solution</a>
+	<a href="<?php echo base_url();?>subscription/index">My Subscriptions</a>
+	<a href="<?php echo base_url();?>user/logout"><span class="glyphicon glyphicon-log-out"></span> logout</a>
+  </div>
+</div>	
+</div>
+</div>
+</div>
 	<div class="container titleBar">
-		<div class="col-xs-12">
+	<div class="row">
+		<div class="col-md-12">
 			<h2><?php echo $title;?></h2>
 		</div>
 	</div>
+	</div>
 	<div class="container breadcrumbBar">
-		<div class="col-xs-12">
+	<div class="row">
+		<div class="col-md-12">
 			<?php if($breadcrumb == "Home") {?>
 				<div class = "breadcrumbBarHome">
 					<?php echo $breadcrumb;?>
@@ -81,5 +104,5 @@
 			echo $breadcrumb; }?>
 		</div>
 	</div>
-
+</div>
      
